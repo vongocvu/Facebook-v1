@@ -21,7 +21,6 @@ import { useEffect, useState, useRef } from "react";
 import InputComment from "../comment/inputComment";
 
 const cx = classNames.bind(styles);
-
 const Post = ({ data }) => {
   const [loading, setLoading] = useState(true);
   const [showDetail, setShowDetail] = useState(false);

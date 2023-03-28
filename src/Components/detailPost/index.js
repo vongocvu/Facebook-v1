@@ -19,6 +19,7 @@ import CommentPost from "../comment";
 import InputComment from "../comment/inputComment";
 import LoadingChatBox from "../loadings/LoadingChatBox";
 
+
 const DetailPost = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -35,7 +36,7 @@ console.log(GroupPost);
     const getPost = async () => {
       setLoading(true)
       await axios
-        .get(`http://localhost:8000/v1/postDetail/getOne/${id}`)
+        .get(`https://sever-facebook-fake.vercel.app/v1/postDetail/getOne/${id}`)
         .then((response) => {
           setGroupPost(response.data.groupPost);
           setPost(response.data.curent_post);

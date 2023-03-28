@@ -27,7 +27,7 @@ const ChangeNickname = () => {
 
 
   const fatchData = async () => {
-    await axios.get(`http://localhost:8000/v1/${typeGroup}/getOne/${idGroup}`)
+    await axios.get(`https://sever-facebook-fake.vercel.app/v1/${typeGroup}/getOne/${idGroup}`)
     .then(response => {
       setData(response.data.group)
       setLoading(false)
@@ -69,7 +69,7 @@ const ChangeNickname = () => {
 
   const submitChangeNickname = async (id) => {
     setLoading(true)
-    await axios.post(`http://localhost:8000/v1/${typeGroup}/updateNickname/${idGroup}`, {
+    await axios.post(`https://sever-facebook-fake.vercel.app/v1/${typeGroup}/updateNickname/${idGroup}`, {
         idUser: id,
         newNickname: input
     })
@@ -83,7 +83,7 @@ const ChangeNickname = () => {
             }
         })
 
-      io('http://localhost:8000').emit('message',{
+      io("https://sever-facebook-fake.vercel.app").emit('message',{
               sender: {
                   _id: user._id,
                   avatar: user.avatar,
@@ -94,7 +94,7 @@ const ChangeNickname = () => {
               event: true
             })
       
-            await axios.post('http://localhost:8000/v1/message/add', {
+            await axios.post(`https://sever-facebook-fake.vercel.app/v1/message/add`, {
               sender: user._id,
               content: `gave ${oldnickname} the nickname ${input} !`,
               group: idGroup,

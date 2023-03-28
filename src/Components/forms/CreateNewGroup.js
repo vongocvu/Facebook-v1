@@ -10,7 +10,6 @@ import Loading from '../loadings/LoadingChatBox'
 
 
 import IgnoreDynamic from "../navigation/ignore_dynamic"
-
 const CreateNewGroup = () => {
 
   const { user } = useSelector(state => ({...state}))
@@ -27,7 +26,7 @@ const CreateNewGroup = () => {
 
     useEffect(() => {
         const findUser = async () => {
-          await axios.get(`http://localhost:8000/v1/auth/find/${inputSearch}`)
+          await axios.get(`https://sever-facebook-fake.vercel.app/v1/auth/find/${inputSearch}`)
           .then(response => {
             setDataSuggested([...response.data.Users])
           })
@@ -56,7 +55,7 @@ const CreateNewGroup = () => {
           idUsers.push({user: data._id, nickname: ""})
         })
         try {
-          await axios.post('http://localhost:8000/v1/groupPublic/add', {
+          await axios.post(`https://sever-facebook-fake.vercel.app/v1/groupPublic/add`, {
              name: nameGroup,
              typeGroup: 2,
              owner: user._id,
@@ -67,7 +66,7 @@ const CreateNewGroup = () => {
           })
 
           .then(response => {
-            io('http://localhost:8000').emit('createGroup', "create Group is successfuly !")
+            io("https://sever-facebook-fake.vercel.app").emit('createGroup', "create Group is successfuly !")
             dispatch({
               type: 'ADD_ROOM',
               payload: response.data._id

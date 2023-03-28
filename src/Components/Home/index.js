@@ -18,8 +18,7 @@ import UserList from "../UserList";
 import GroupList from "../GroupList";
 import CreateNewPost from "../forms/CreateNewPost"
 import LoadingChatBox from "../loadings/LoadingChatBox";
-
-const socket = require('socket.io-client')?.('http://localhost:8000')
+const socket = require('socket.io-client')?.("https://sever-facebook-fake.vercel.app")
 
 const cx = classNames.bind(styles);
 const Home = () => {
@@ -46,7 +45,7 @@ const Home = () => {
       useEffect(() => {
         const fecthData = async () => {
             setLoading(true)
-            await axios.get(`http://localhost:8000/v1/post/getPosts/${user._id}`)
+            await axios.get(`https://sever-facebook-fake.vercel.app/v1/post/getPosts/${user._id}`)
             .then(response => {
                 setPosts(response.data)
                 setLoading(false)

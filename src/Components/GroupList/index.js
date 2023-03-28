@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-
 import IgnoreDynamic from "../navigation/ignore_dynamic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
@@ -16,7 +15,7 @@ const GroupList = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/v1/groupPublic/getMyGroups/${user._id}`)
+      .get(`https://sever-facebook-fake.vercel.app/v1/groupPublic/getMyGroups/${user._id}`)
       .then((response) => {
         setMyGroups([...response.data.MyGroups]);
       });

@@ -15,7 +15,7 @@ import styles from './Header.module.scss'
 import { useState } from "react";
 
 const cx = classNames.bind(styles)
-const socket = require('socket.io-client')('http://localhost:8000')
+const socket = require('socket.io-client')("https://sever-facebook-fake.vercel.app")
 
 const Header = () => {  
   const navigate = useNavigate()

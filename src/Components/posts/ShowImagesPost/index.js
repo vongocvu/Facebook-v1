@@ -2,14 +2,13 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
-
 const ShowImagesPost = ({idPost}) => {
 
      const [ Data, setData ] = useState([])
 
      useEffect(() => {
           const getData = async () => {
-              await axios.get(`http://localhost:8000/v1/postDetail/getByPost/${idPost}`)
+              await axios.get(`https://sever-facebook-fake.vercel.app/v1/postDetail/getByPost/${idPost}`)
               .then(response => {
                 setData(response.data)
               })

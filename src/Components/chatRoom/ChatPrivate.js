@@ -17,7 +17,8 @@ import FirstChat from "./message/firstChat"
 import HandlerShowMessage from "./message/handlerShowMessage"
 
 
-const socket = io('http://localhost:8000')
+
+const socket = io("https://sever-facebook-fake.vercel.app")
 const cx = classNames.bind(styles)
 
 const ChatPrivate = ({ data, chatWindow, roomChating }) => {
@@ -106,7 +107,7 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
   useEffect(() => {
     if (hidden && getData) {
       const getMessages = async () => {
-        await axios.get(`http://localhost:8000/v1/message/getByGroup/${data._id}`)
+        await axios.get(`https://sever-facebook-fake.vercel.app/v1/message/getByGroup/${data._id}`)
         .then((response) => {
           setChatList([...response.data.messages]);
           setTimeout(() => {

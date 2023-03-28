@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-const socket = require('socket.io-client')('http://localhost:8000')
+const socket = require('socket.io-client')("https://sever-facebook-fake.vercel.app")
 
 const userData = Cookies.get("CURENT_USER") ? JSON.parse(Cookies.get("CURENT_USER")) : null
 

@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useSelector, useDispatch, connect } from "react-redux";
 import axios from "axios";
-
 import IgnoreDynamic from "../navigation/ignore_dynamic";
 
 const UserList = (props) => {
@@ -10,7 +9,7 @@ const UserList = (props) => {
 
     const createRoomPrivate = async (friend) => {
       await axios
-        .post("http://localhost:8000/v1/groupPrivate/add", {
+        .post(`https://sever-facebook-fake.vercel.app/v1/groupPrivate/add`, {
           members: [
             {
                user: user._id,
@@ -34,7 +33,7 @@ const UserList = (props) => {
     const handlerChatPrivate = async (event) => {
       await axios
         .get(
-          `http://localhost:8000/v1/groupPrivate/getMyGroup/${
+          `https://sever-facebook-fake.vercel.app/v1/groupPrivate/getMyGroup/${
             user._id
           }/${event.target.closest(".Friend").getAttribute("id")}`
         )

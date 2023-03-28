@@ -13,7 +13,6 @@ import { faCamera, faPen, faPlus } from "@fortawesome/free-solid-svg-icons"
 
 import Post from '../posts'
 
-
 const cx = classNames.bind(styles)
 
 const Profile = () => {
@@ -52,7 +51,7 @@ const Profile = () => {
 
    useEffect(() => {
     const fecthData = async () => {
-        await axios.get(`http://localhost:8000/v1/post/getMyPosts/${idUser}`)
+        await axios.get(`https://sever-facebook-fake.vercel.app/v1/post/getMyPosts/${idUser}`)
         .then(response => {
             setPosts(response.data)
         })
@@ -63,7 +62,7 @@ const Profile = () => {
    
    useEffect(() => {
        const fecthData = async () => {
-           await axios.get(`http://localhost:8000/v1/auth/getOne/${idUser}`)
+           await axios.get(`https://sever-facebook-fake.vercel.app/v1/auth/getOne/${idUser}`)
            .then(response => {
             setFriends(response.data.user)
            })

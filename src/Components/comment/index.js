@@ -5,7 +5,7 @@ import axios from "axios"
 import ChildrenComment from "./ChildrenComment"
 import CommentLayout from "./layoutComment"
 
-const socket = require("socket.io-client")('http://localhost:8000')
+const socket = require("socket.io-client")("https://sever-facebook-fake.vercel.app")
 
 const CommentPost = ({post}) => {
 
@@ -32,7 +32,7 @@ const CommentPost = ({post}) => {
   useEffect(() => {
     const fecthData = async () => {
       post !== undefined &&
-       await axios.get(`http://localhost:8000/v1/comment/getByPost/${post}`)
+       await axios.get(`https://sever-facebook-fake.vercel.app/v1/comment/getByPost/${post}`)
        .then(response => {
          setComments(response.data)
          setNewComments([])

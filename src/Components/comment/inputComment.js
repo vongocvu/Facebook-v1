@@ -5,8 +5,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import axios from "axios";
 
 
-
-const socket = require("socket.io-client")("http://localhost:8000")
+const socket = require("socket.io-client")("https://sever-facebook-fake.vercel.app")
 
 
 
@@ -30,7 +29,7 @@ const InputComment = ({post, parent_id, level, isFocus}) => {
 
   const handlerSubmitComment = async () => {
     
-    await axios.post('http://localhost:8000/v1/comment/addComment', {
+    await axios.post(`https://sever-facebook-fake.vercel.app/v1/comment/addComment`, {
             author: user._id,
             content: comment,
             post: post,
