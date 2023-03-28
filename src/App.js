@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Route, Routes } from "react-router-dom";
+import Home from "./Components/Home";
+import SignIn from "./Components/SignIn";
+import IsLoggedIn from "./routers/IsLoggedIn";
+import ChangeTheme from "./Components/chatRoom/settings/ChangeTheme";
+import ChangeNickname from "./Components/chatRoom/settings/ChangeNickname";
+import Profile from "./Components/profile";
+import DetailPost from "./Components/detailPost";
+import ChatWindow from "./Components/chatWindow";
 
-function App() {
+function App() { 
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Routes>
+        <Route element={<IsLoggedIn/>}>
+           <Route path="/" element={<Home/>}>
+              <Route path="/setting/changetheme/:typeGroup/:idGroup"  element={<ChangeTheme/>}/>
+              <Route path="/setting/changenickname/:typeGroup/:idGroup" element={<ChangeNickname/>}/>
+              <Route path="/post/detail/:id" element={<DetailPost/>}/> 
+              <Route path="/message/:id" element={<ChatWindow/>}/>
+           </Route>
+           <Route path="/profile/:idUser" element={<Profile/>}/>
+           <Route path="/watch" element={<Home/>}/>
+        </Route>
+        <Route path="/login" element={<SignIn/>}/>
+      </Routes>
   );
 }
 

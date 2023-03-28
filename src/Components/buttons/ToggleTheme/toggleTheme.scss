@@ -1,0 +1,23 @@
+.container-toggle {
+  box-shadow: inset 0px 0px 10px 2px rgba(0, 0, 0, 0.1);
+  transition: all .1s linear;
+  background-color: rgb(41, 38, 38);
+}
+
+
+.btnToggle {
+  transition: all .5s ease-in-out;
+  position: absolute;
+  top: 50%;
+  height: 70%;
+  width: 30px;
+  background-color: rgb(255, 255, 255);
+  transform: translateY(-50%);  
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.darkTheme {
+  transform: translate(35px, -50% );
+}
+

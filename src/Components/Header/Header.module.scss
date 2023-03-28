@@ -1,0 +1,9 @@
+.wrapper {
+      height: 60px;
+      background-color: rgb(255, 255, 255);
+      box-shadow: 0 0 5px rgba(156, 151, 151, 0.6);
+}
+
+.nav_bar ~ .active {
+      color: blue
+}

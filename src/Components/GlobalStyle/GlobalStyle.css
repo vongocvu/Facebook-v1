@@ -1,0 +1,118 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind screens;
+
+
+.flex-center {
+  @apply flex items-center justify-center
+}
+
+
+.dark .primary-bg {
+  background-color: #161616;
+}
+
+.dark .secondary-bg {
+  background-color: #242526;
+}
+
+.dark .comment-bg {
+  background-color: #3A3B3C;
+}
+
+.dark .hover-dark:hover {
+  background-color: #3A3B3C;
+}
+
+.dark .shadow-dark {
+  box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2),0 2px 4px 0 rgba(0, 0, 0, 0.1),inset 0 0 0 1px rgba(255, 255, 255, 0.05)
+}
+
+.dark .b-full {
+  border: 1px solid #3E4042 !important;
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+.dark .cart-bg {
+  background-color: #323436;
+}
+
+.dark .cart-hover:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .b-full-shadow {
+  border: 1px solid #3E4042 !important;
+}
+
+.dark .b-top{
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.05);
+
+}
+
+.dark .b-left{
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.05);
+
+}
+
+.dark .b-right{
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.05);
+
+}
+
+.dark .b-bottom{
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.05);
+
+}
+
+.dark .primary-text {
+  color: #E4E6EB
+}
+
+.dark .secondary-text {
+  color: #B0B3B8
+}
+
+.dark .item-bg {
+  background-color: rgba(255,255,255,.1)
+}
+
+.dont-coppy {
+    -moz-user-select: none !important;
+    -webkit-touch-callout: none!important;
+    -webkit-user-select: none!important;
+    -khtml-user-select: none!important;
+    -moz-user-select: none!important;
+    -ms-user-select: none!important;
+    user-select: none!important;
+}
+
+.dark .b-bottom-light {
+  border-bottom: 1px solid #ccc
+}
+
+.dark .fiter-icon-dark {
+  filter: invert(62%) sepia(98%) saturate(12%) hue-rotate(175deg) brightness(90%) contrast(96%);
+}
+
+.dark .opacity-60 {
+  background: opacity(60%);
+}
+
+.text-over {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

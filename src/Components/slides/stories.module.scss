@@ -1,0 +1,48 @@
+.slick-prev:before {
+  content: "←";
+}
+
+.slick-next:before {
+  content: "→";
+}
+
+.slick-prev:before, .slick-next:before {
+  font-family: "slick";
+  font-size: 50px !important;
+  line-height: 1;
+  opacity: 1;
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.slick-prev {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.slick-next {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.slick-track {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.card-img {
+  transition: transform .2s linear;
+}
+
+.card-img:hover {
+  transform: scale(1.1);
+}
+

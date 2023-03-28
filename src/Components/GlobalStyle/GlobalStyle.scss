@@ -1,0 +1,313 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
+
+* {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+}
+
+:root {
+      --bg-wall: #F0F2F5
+}
+
+.nav_bar_header .active {
+      color:rgb(10 65 219 / 74%);
+      position: relative;
+}
+
+.dark .nav_bar_header .active {
+      color:rgba(224, 228, 238, 0.74);
+      position: relative;
+}
+
+.nav_bar_header .active::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-bottom: 2px solid blue;
+}
+
+.dark .active {
+      color: white !important;
+}
+
+.slick-track {
+     display: flex;
+     align-items: center;
+     margin: 10px 0;
+}
+
+.slick-slide {
+      height: 100%;
+}
+
+/* width */
+.custom_scroll::-webkit-scrollbar {
+      width: 5px;
+}
+    
+    /* Track */
+.custom_scroll::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 5px transparent;
+      border-radius: 10px;
+}
+    
+    /* Handle */
+.custom_scroll::-webkit-scrollbar-thumb {
+      background: rgb(138, 135, 135);
+      border-radius: 10px;
+}
+
+body::-webkit-scrollbar {
+      width: 5px;
+}
+    
+    /* Track */
+body::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 5px rgb(0, 0, 0);
+      border-radius: 10px;
+}
+    
+    /* Handle */
+body::-webkit-scrollbar-thumb {
+      background: rgb(88, 89, 92);
+      border-radius: 10px;
+}
+
+body {
+      scroll-behavior: smooth !important;
+}
+
+.h-body {
+      height: calc(100vh - 60px);
+}
+
+
+.active .focusChatBox {
+      color: rgb(0, 132, 255);
+}
+
+.blue-message {
+      color: rgb(10, 78, 204);
+}
+
+.transitions {
+      transition: all 1s linear !important;
+}
+
+
+.messages-container:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(rgb(255, 143, 178) 0%, rgb(167, 151, 255) 50%, rgb(0, 229, 255) 100%);
+      pointer-events: none;
+      mix-blend-mode: screen;
+}
+
+.mix-blend-mode-black {
+      mix-blend-mode: multiply;
+}
+
+
+//Đường line trong comment
+
+
+.line-comment::before {
+      content: "";
+      position: absolute;
+      border-radius: 20px;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      transform: translate(-25px, -80%); 
+      border-left: 1px solid rgba(0, 0, 0, .4);
+}
+
+
+.dark .line-comment::before {
+      border-left: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+
+.line-comment2::before {
+      content: "";
+      position: absolute;
+      border-radius: 20px;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      transform: translate(-25px, -80%); 
+      border-left: 1px solid rgba(0, 0, 0, .4);
+}
+
+
+.dark .line-comment2::before {
+      border-left: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.dark .secondary-text {
+      color: #B0B3B8
+} 
+
+
+.line-comment-parent,
+.line-comment-children,
+.line-comment-child
+ {
+      position: relative;
+}
+
+.dark .line-comment-parent::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10%;
+      height: 95%;
+      transform: translateX(15px);
+      border-left: 1px solid rgb(87, 84, 84)
+}
+
+.dark .line-comment-children::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 90%;
+      transform: translate(15px ,15px);
+      border-top: 1px solid rgb(87, 84, 84);
+}
+
+
+.dark .line-comment-children::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 10%;
+      height: 90%;
+      transform: translateX(55px);
+      border-left: 1px solid rgb(87, 84, 84)
+}
+
+.dark .line-comment-child::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 90%;
+      transform: translate(15px, 20px);
+      border-top: 1px solid rgb(87, 84, 84);
+}
+
+
+
+
+
+
+.light .line-comment-parent::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10%;
+      height: 100%;
+      transform: translateX(15px);
+      border-left: 1px solid rgb(119, 113, 113)
+}
+
+.light .line-comment-children::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 90%;
+      transform: translate(15px ,15px);
+      border-top: 1px solid rgb(119, 113, 113);
+}
+
+
+.light .line-comment-children::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      height: 90%;
+      transform: translateX(55px);
+      border-left: 1px solid rgb(119, 113, 113)
+}
+
+.light .line-comment-child::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 10%;
+      transform: translate(15px, 20px);
+      border-top: 1px solid rgb(119, 113, 113);
+}
+
+
+.line-input {
+      position: relative;
+}
+
+.dark .line-input::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 100%;
+      transform: translate(15px, -50%);
+      border-bottom: 1px solid rgb(87, 84, 84);
+      border-left: 1px solid rgb(87, 84, 84);
+}
+
+.light .line-input::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 100%;
+      transform: translate(15px, -50%);
+      border-bottom: 1px solid rgb(119, 113, 113);
+      border-left: 1px solid rgb(119, 113, 113);
+}
+
