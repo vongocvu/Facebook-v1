@@ -51,7 +51,7 @@ const Profile = () => {
 
    useEffect(() => {
     const fecthData = async () => {
-        await axios.get(`https://sever-facebook-fake.vercel.app/v1/post/getMyPosts/${idUser}`)
+        await axios.get(`${process.env.REACT_APP_API}/v1/post/getMyPosts/${idUser}`)
         .then(response => {
             setPosts(response.data)
         })
@@ -62,7 +62,7 @@ const Profile = () => {
    
    useEffect(() => {
        const fecthData = async () => {
-           await axios.get(`https://sever-facebook-fake.vercel.app/v1/auth/getOne/${idUser}`)
+           await axios.get(`${process.env.REACT_APP_API}/v1/auth/getOne/${idUser}`)
            .then(response => {
             setFriends(response.data.user)
            })

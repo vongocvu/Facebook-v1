@@ -21,7 +21,7 @@ const SignIn = () => {
 
       const handleSubmit = async () => {
         try {
-                const { data } = await axios.post(`https://sever-facebook-fake.vercel.app/v1/auth/login`, {
+                const { data } = await axios.post(`${process.env.REACT_APP_API}/v1/auth/login`, {
                   email: email,
                   password: password
                 })

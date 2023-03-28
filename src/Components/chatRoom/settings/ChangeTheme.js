@@ -48,7 +48,7 @@ const ChangeTheme = () => {
 
   const handlerCancelChangeTheme = async () => {
     setLoading(true)
-    await axios.get(`https://sever-facebook-fake.vercel.app/v1/${typeGroup}/getOne/${idGroup}`, {
+    await axios.get(`${process.env.REACT_APP_API}/v1/${typeGroup}/getOne/${idGroup}`, {
       theme: choosedTheme
       })
       .then(response => {
@@ -65,12 +65,12 @@ const ChangeTheme = () => {
   const handlerSubmitChangeTheme = async () => {
      if (choosedTheme !== "") {
           setLoading(true)
-         await axios.post(`https://sever-facebook-fake.vercel.app/v1/${typeGroup}/updateTheme/${idGroup}`, {
+         await axios.post(`${process.env.REACT_APP_API}/v1/${typeGroup}/updateTheme/${idGroup}`, {
              theme: choosedTheme
          })
          .then(async response => {
           if (response) {
-            io("https://sever-facebook-fake.vercel.app").emit('message',{
+            io(process.env.REACT_APP_API).emit('message',{
               sender: {
                   _id: user._id,
                   avatar: user.avatar,
@@ -81,7 +81,7 @@ const ChangeTheme = () => {
               event: true
             })
       
-            await axios.post(`https://sever-facebook-fake.vercel.app/v1/message/add`, {
+            await axios.post(`${process.env.REACT_APP_API}/v1/message/add`, {
               sender: user._id,
               content: 'changed the theme for the group !',
               group: idGroup,

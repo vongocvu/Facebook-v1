@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import io from "socket.io-client";
 
-const socket = io("https://sever-facebook-fake.vercel.app");
+const socket = io(process.env.REACT_APP_API);
 
 const ChatGlobal = ({ chatWindow, roomMessage }) => {
   const dispatch = useDispatch();
@@ -77,10 +77,10 @@ const ChatGlobal = ({ chatWindow, roomMessage }) => {
     const fetchData = async () => {
       try {
         const request1 = axios.get(
-          `https://sever-facebook-fake.vercel.app/v1/groupPublic/getMyGroups/${user?._id}`
+          `${process.env.REACT_APP_API}/v1/groupPublic/getMyGroups/${user?._id}`
         );
         const request2 = axios.get(
-          `https://sever-facebook-fake.vercel.app/v1/groupPrivate/getMyGroups/${user?._id}`
+          `${process.env.REACT_APP_API}/v1/groupPrivate/getMyGroups/${user?._id}`
         );
 
         const [response1, response2] = await axios.all([request1, request2]);

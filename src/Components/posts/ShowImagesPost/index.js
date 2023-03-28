@@ -8,7 +8,7 @@ const ShowImagesPost = ({idPost}) => {
 
      useEffect(() => {
           const getData = async () => {
-              await axios.get(`https://sever-facebook-fake.vercel.app/v1/postDetail/getByPost/${idPost}`)
+              await axios.get(`${process.env.REACT_APP_API}/v1/postDetail/getByPost/${idPost}`)
               .then(response => {
                 setData(response.data)
               })

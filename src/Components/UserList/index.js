@@ -9,7 +9,7 @@ const UserList = (props) => {
 
     const createRoomPrivate = async (friend) => {
       await axios
-        .post(`https://sever-facebook-fake.vercel.app/v1/groupPrivate/add`, {
+        .post(`${process.env.REACT_APP_API}/v1/groupPrivate/add`, {
           members: [
             {
                user: user._id,
@@ -33,7 +33,7 @@ const UserList = (props) => {
     const handlerChatPrivate = async (event) => {
       await axios
         .get(
-          `https://sever-facebook-fake.vercel.app/v1/groupPrivate/getMyGroup/${
+          `${process.env.REACT_APP_API}/v1/groupPrivate/getMyGroup/${
             user._id
           }/${event.target.closest(".Friend").getAttribute("id")}`
         )

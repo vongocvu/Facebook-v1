@@ -10,7 +10,7 @@ import Search from "../search"
 import { useEffect, useState } from "react"
 import Moment from "../moments"
 import LoadingChatBox from "../loadings/LoadingChatBox"
-const socket = require('socket.io-client')("https://sever-facebook-fake.vercel.app")
+const socket = require('socket.io-client')(process.env.REACT_APP_API)
 
 
 const ListChats = ({ roomActive, show, handlerShowMessage, chatGlobal }) => {
@@ -54,7 +54,7 @@ const ListChats = ({ roomActive, show, handlerShowMessage, chatGlobal }) => {
 
      const fetchData = async () => {
       setLoading(true)
-         await axios.get(`https://sever-facebook-fake.vercel.app/v1/group/getMyGroups/${user._id}`)
+         await axios.get(`${process.env.REACT_APP_API}/v1/group/getMyGroups/${user._id}`)
          .then((response) => {
           setListMessage(response.data.sort((a, b) => new Date(b.message?.createdAt) - new Date(a.message?.createdAt)))
           setGroupNotSend(response.data.filter(data => !data.message.sended.includes(user._id)))
@@ -69,7 +69,7 @@ const ListChats = ({ roomActive, show, handlerShowMessage, chatGlobal }) => {
        chatGlobal && handlerShowMessage(idGroup)
     if (GroupNotSend.some( data => data.Group._id === idGroup)) {
       setGroupNotSend(() => GroupNotSend.filter((group) => group.Group._id !== idGroup))
-      await axios.post(`https://sever-facebook-fake.vercel.app/v1/message/sendMessage/${idMessage}`, {
+      await axios.post(`${process.env.REACT_APP_API}/v1/message/sendMessage/${idMessage}`, {
           user: user._id
       })
     }

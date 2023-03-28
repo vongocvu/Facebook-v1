@@ -15,7 +15,7 @@ const GroupList = () => {
 
   useEffect(() => {
     axios
-      .get(`https://sever-facebook-fake.vercel.app/v1/groupPublic/getMyGroups/${user._id}`)
+      .get(`${process.env.REACT_APP_API}/v1/groupPublic/getMyGroups/${user._id}`)
       .then((response) => {
         setMyGroups([...response.data.MyGroups]);
       });

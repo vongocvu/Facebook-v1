@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import io from 'socket.io-client';
 import { useDispatch } from 'react-redux';
-const socket = io("https://sever-facebook-fake.vercel.app")
+const socket = io(process.env.REACT_APP_API)
 
 const listenMessages = (RoomChattings) => {
   const dispatch = useDispatch()

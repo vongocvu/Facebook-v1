@@ -36,7 +36,7 @@ console.log(GroupPost);
     const getPost = async () => {
       setLoading(true)
       await axios
-        .get(`https://sever-facebook-fake.vercel.app/v1/postDetail/getOne/${id}`)
+        .get(`${process.env.REACT_APP_API}/v1/postDetail/getOne/${id}`)
         .then((response) => {
           setGroupPost(response.data.groupPost);
           setPost(response.data.curent_post);

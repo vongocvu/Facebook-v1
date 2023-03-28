@@ -26,7 +26,7 @@ const CreateNewGroup = () => {
 
     useEffect(() => {
         const findUser = async () => {
-          await axios.get(`https://sever-facebook-fake.vercel.app/v1/auth/find/${inputSearch}`)
+          await axios.get(`${process.env.REACT_APP_API}/v1/auth/find/${inputSearch}`)
           .then(response => {
             setDataSuggested([...response.data.Users])
           })
@@ -55,7 +55,7 @@ const CreateNewGroup = () => {
           idUsers.push({user: data._id, nickname: ""})
         })
         try {
-          await axios.post(`https://sever-facebook-fake.vercel.app/v1/groupPublic/add`, {
+          await axios.post(`${process.env.REACT_APP_API}/v1/groupPublic/add`, {
              name: nameGroup,
              typeGroup: 2,
              owner: user._id,
@@ -66,7 +66,7 @@ const CreateNewGroup = () => {
           })
 
           .then(response => {
-            io("https://sever-facebook-fake.vercel.app").emit('createGroup', "create Group is successfuly !")
+            io(process.env.REACT_APP_API).emit('createGroup', "create Group is successfuly !")
             dispatch({
               type: 'ADD_ROOM',
               payload: response.data._id

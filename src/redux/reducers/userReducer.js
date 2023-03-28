@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-const socket = require('socket.io-client')("https://sever-facebook-fake.vercel.app")
+const socket = require('socket.io-client')(process.env.REACT_APP_API)
 
 const userData = Cookies.get("CURENT_USER") ? JSON.parse(Cookies.get("CURENT_USER")) : null
 

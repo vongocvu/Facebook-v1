@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind";
@@ -8,6 +9,8 @@ import styles from "./stories.module.scss";
 const cx = classNames.bind(styles);
 
 const Stories = ( { Store }) => {
+   
+
   const settings = {
     dots: false,
     infinite: false,

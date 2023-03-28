@@ -111,7 +111,7 @@ const CreateNewPost = () => {
       setLoading(true);
 
       await axios
-        .post(`https://sever-facebook-fake.vercel.app/v1/post/addPost`, {
+        .post(`${process.env.REACT_APP_API}/v1/post/addPost`, {
           author: user._id,
           content: input,
           status_share: dataShare,
@@ -124,7 +124,7 @@ const CreateNewPost = () => {
             formData.append("content", "1213");
             formData.append("parent_post", response.data._id);
             await axios.post(
-              `https://sever-facebook-fake.vercel.app/v1/postDetail/addPostDetail`,
+              `${process.env.REACT_APP_API}/v1/postDetail/addPostDetail`,
               formData
             );
             dispatch({
