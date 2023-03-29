@@ -73,9 +73,9 @@ const Post = ({ data }) => {
         className={cx(
           `${
             showDetail
-              ? "w-[750px] h-full lg:h-[98%] overflow-y-scroll custom_scroll mb-0 relative"
-              : "mb-5"
-          } w-[full] bg-white shadow-md rounded-xl secondary-bg border b-full dark:shadow-gray-900 shadow-md shadow-gray-400`
+              ? "w-[755px] h-full lg:h-[100%] overflow-y-scroll custom_scroll mb-0 relative"
+              : "mb-2"
+          } w-[full] max-md:rounded-none bg-white shadow-md rounded-xl secondary-bg border b-full dark:shadow-gray-900 shadow-md shadow-gray-400`
         )}
       >
         {loading && <LoadingChatBox />}

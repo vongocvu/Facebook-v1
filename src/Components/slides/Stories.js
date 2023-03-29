@@ -2,6 +2,7 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind";
+import { useEffect, useState } from "react";
 import Slider from "react-slick";
 
 import styles from "./stories.module.scss";
@@ -9,14 +10,24 @@ import styles from "./stories.module.scss";
 const cx = classNames.bind(styles);
 
 const Stories = ( { Store }) => {
-   
 
+
+  const [ numberSlide, setNumberSlide ] = useState(5.5)
+
+  useEffect(() => {
+     window.addEventListener('resize', () => {
+         window.innerWidth > 1024 && setNumberSlide(5.5)
+         window.innerWidth < 1024 && window.innerWidth > 768 && setNumberSlide(4.5)
+         window.innerWidth < 768 && setNumberSlide(3.5)
+     })
+  })
+   
   const settings = {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 5.5,
-    slidesToScroll: 4.5,
+    slidesToShow: numberSlide,
+    slidesToScroll: numberSlide - 1,
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
   };

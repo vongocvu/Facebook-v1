@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom"
 import axios from "axios"
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import styles from "./home.module.scss";
 import Stories from "../slides/Stories";
@@ -17,7 +18,6 @@ import Post from '../posts'
 import UserList from "../UserList";
 import GroupList from "../GroupList";
 import CreateNewPost from "../forms/CreateNewPost"
-import LoadingChatBox from "../loadings/LoadingChatBox";
 const socket = require('socket.io-client')?.(process.env.REACT_APP_API)
 
 const cx = classNames.bind(styles);
@@ -26,7 +26,8 @@ const Home = () => {
 
   const { user, usersOnline } = useSelector(state => ({ ...state }))
   const [ Posts, setPosts ] = useState([])
-  const [ loading, setLoading ] = useState(false)
+  const [ hasMore, setHasMore ] = useState(true)
+  const [ limit, setLimit ] = useState(1)
 
      useEffect(() => {
         user && socket.emit('user_connected', user)
@@ -42,18 +43,26 @@ const Home = () => {
             })
       },[])
 
+      const fecthData = async () => {
+        console.log("1213");
+          await axios.get(`${process.env.REACT_APP_API}/v1/post/getPosts/${user._id}/${limit}`)
+          .then(response => {
+              setPosts([...response.data])
+              if ( response.data.length < limit) {
+                  setHasMore(false)
+              } else {
+                  setLimit(limit + 1)
+              }
+          })
+      }
+
       useEffect(() => {
-        const fecthData = async () => {
-            setLoading(true)
-            await axios.get(`${process.env.REACT_APP_API}/v1/post/getPosts/${user._id}`)
-            .then(response => {
-                setPosts(response.data)
-                setLoading(false)
-            })
-        }
-        fecthData()
+         fecthData()
       },[])
 
+      const fetchMoreData = () => {
+        hasMore && fecthData()
+      }
 
       useEffect(() => {
           socket.on('user_connecting', newUser => {
@@ -102,7 +111,6 @@ const Home = () => {
         <>
            <div className="w-full flex flex-col bg-gray-100">
                <Header/>
-               { loading && <LoadingChatBox/>}
                <div className="grid grid-cols-12 mt-[60px] primary-bg ">
                     <div className='max-lg:hidden h-body sm:max-lg:hidden lg:col-span-2 py-3 px-2 sticky left-0 top-[60px] primary-bg '>
                         {
@@ -112,10 +120,10 @@ const Home = () => {
                         }
                     </div>
 
-                    <div className="max-md:col-span-12 md:col-span-8 flex flex-col items-center mt-4 primary-bg  dark:text-white">           
-                        <div className="w-[700px] max-md:w-[98%] max-lg:w-[600px] bg-white shadow-md rounded-lg mb-5 secondary-bg border b-full">
-                        <div className={cx("w-full grid grid-cols-12 px-[10px] py-[3px]",'nav-story')}>
-                            <div className={cx("col-span-4 flex place-content-center py-[15px] border-blue-600 items-center cursor-pointer hover-dark hover:bg-gray-100 mx-1 rounded-md",'active')}>
+                    <div className="max-md:mt-0 max-md:col-span-12 md:col-span-8 flex flex-col items-center mt-4 primary-bg  dark:text-white">           
+                    <div className="max-md:order-2 max-md:border-transparent max-md:mb-2 w-[700px] max-md:w-[100%] max-lg:w-[600px] bg-white shadow-md rounded-lg mb-5 secondary-bg border b-full">
+                        <div className={cx("max-md:hidden w-full grid grid-cols-12 px-[10px] py-[3px]",'nav-story')}>
+                            <div className={cx(" col-span-4 flex place-content-center py-[15px] border-blue-600 items-center cursor-pointer hover-dark hover:bg-gray-100 mx-1 rounded-md",'active')}>
                                 <FontAwesomeIcon icon={faBookOpenReader} className={cx("text-xl mr-2 ")}/>
                                 <span className={cx("font-medium")}>Stories</span>
                             </div>
@@ -132,13 +140,13 @@ const Home = () => {
                             <Stories Store={Store}/>
                       </div>
 
-                        <div className={cx("w-[700px] max-md:w-[98%] max-lg:w-[600px] bg-white b-full border shadow-md rounded-lg mb-5 secondary-bg")}>
+                        <div className={cx("max-md:border-transparent max-md:shadow-transparent max-md:mb-1 max-md:order-1 w-[700px] max-md:w-[100%] max-lg:w-[600px] bg-white b-full border shadow-md rounded-lg mb-5 secondary-bg")}>
                             <div className={cx('flex py-[10px] px-[15px]')}>
                                 <img className={cx("w-10 h-10 rounded-full mr-[10px]")}  src={user?.avatar} alt="anh"/>
                                 <button onClick={showFormCreatePost} className={cx("flex-1 text-left bg-gray-100 comment-bg hover:opacity-80 rounded-3xl px-3")}>What's on your mind ?</button>
                             </div>
                                  <hr className="b-full"/>
-                            <div className={cx("w-full grid grid-cols-12 px-[10px] py-[3px]",'nav-story')}>
+                            <div className={cx("max-md:hidden w-full grid grid-cols-12 px-[10px] py-[3px]",'nav-story')}>
                                 <div className={cx("col-span-4 flex place-content-center py-[15px] border-blue-600 items-center cursor-pointer hover-dark hover:bg-gray-100 mx-1 rounded-md")}>
                                     <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yr/r/c0dWho49-X3.png" alt=""/>
                                     <span className={cx("font-medium ml-2")}>Live video</span>
@@ -155,13 +163,24 @@ const Home = () => {
                                 </div>
                             </div>
                         </div>
-                            <div className="w-[700px] max-md:w-[98%] max-lg:w-[600px] rounded-lg">
+
+                            <div className="max-md:order-3 w-[700px] max-md:w-[100%] max-lg:w-[600px] rounded-lg">
+                            <InfiniteScroll
+                                dataLength={Posts.length}
+                                next={fetchMoreData}
+                                hasMore={hasMore}
+                                loader={<h4 className="text-center my-4">Loading...</h4>}
+                                endMessage={<div className="text-center my-4">It is the post last !</div>}
+                            >
                                 {
                                     Posts.map((post, i) => (    
                                             <Post key={i}  data={post}/>
                                             )
                                         )
                                 }
+
+                            </InfiniteScroll>
+                                
                             </div>
                         </div>
 

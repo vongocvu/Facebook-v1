@@ -3,6 +3,7 @@ import { faChevronDown, faCirclePlus, faGift, faImage, faMinus, faNoteSticky, fa
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState, useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import debounce from 'lodash.debounce';
 
 import classNames from "classnames/bind"
 import io from 'socket.io-client'
@@ -10,7 +11,6 @@ import axios from "axios"
 
 import styles from './chatRoom.module.scss'
 import handlerChat from "../functions/handlerChat"
-import LoadingChatBox from "../loadings/LoadingChatBox"
 import SettingsChatBox from "./forms/settingOnChatBox"
 import ShowTabName from "../tooltip"
 import FirstChat from "./message/firstChat"
@@ -29,17 +29,19 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
 
   const messageListRef = useRef(null);
   const inputRef = useRef(null);
+  const oldMessageRef = useRef(null);
+  const BoxChatRef = useRef(null);
 
   const [ inputChat, setInputChat ] = useState('')
   const [ ChatList, setChatList ] = useState([])
   const [ friend, setFriend ] = useState({})
 
   const [ hidden, setHidden ] = useState(false)
-  const [ getData, setGetData ] = useState(true)
-  const [ loading, setLoading ] = useState(true)
+  const [ limit, setLimit ] = useState(20)
   const [ formOptions, setFormOptions ] = useState(false)
   const [ newMessage, setNewMessage ] = useState([])
   const [ IsChatting, setIsChatting ] = useState(false)
+  const [ HasMore, setHasMore ] = useState(true)
 
 
   useEffect(() => {
@@ -48,10 +50,10 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
   },[rooms])
 
 
-  useEffect(() => {
-    messageListRef?.current?.scrollIntoView()
-  })
 
+    
+
+    
 
   useEffect(() => {
     chatWindow && setHidden(false)
@@ -103,23 +105,37 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
     })
   }, [newMessage])
 
+  const getMessages = async () => {
+      if (HasMore) {
+        await axios.get(`${process.env.REACT_APP_API}/v1/message/getByGroup/${data._id}/${limit}`)
+        .then((response) => {
+          const messages = response.data.messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+          setChatList([...messages]);
+          if ( response.data.length < limit ) {
+              setHasMore(false)
+          } else {
+            setLimit(limit + 20)
+          }
+        })
+    }
+  }
+  
 
   useEffect(() => {
-    if (hidden && getData) {
-      const getMessages = async () => {
-        await axios.get(`${process.env.REACT_APP_API}/v1/message/getByGroup/${data._id}`)
-        .then((response) => {
-          setChatList([...response.data.messages]);
-          setTimeout(() => {
-            messageListRef.current?.scrollIntoView()
-          }, 500)
-          setLoading(false)
-        })
-      }
-      setGetData(false)
       getMessages()
-    }
   },[hidden])
+
+
+  const debouncedHandleScroll = debounce(getMessages, 100);
+
+  useEffect(() => {
+    BoxChatRef?.current?.addEventListener('scroll', () => {
+         if (BoxChatRef?.current?.getBoundingClientRect().top <= oldMessageRef?.current?.getBoundingClientRect().top) {
+          debouncedHandleScroll()
+          BoxChatRef?.current?.removeEventListener('scroll', () => {})
+         }
+     })
+  })
 
   const handlerSendMessage = () => {
     if (inputChat.length > 0) {
@@ -222,12 +238,12 @@ return hidden &&
            }
         </div>
 
-        <div className={cx('flex-1 overflow-y-scroll text-sm pb-[5px] secondary-bg', 'custom_scroll')} > 
-                    { loading && <LoadingChatBox/> }
-                    <FirstChat avatar={friend.user.avatar}/>
+        <div ref={BoxChatRef} className={cx('flex-1 overflow-y-scroll text-sm pb-[5px] secondary-bg', 'custom_scroll')} > 
+                    {/* <FirstChat avatar={friend.user.avatar}/> */}
+                    <div ref={oldMessageRef}className="text-center my-4">Loading...</div>
                     <HandlerShowMessage chatList={ChatList} user={user} data={data}/>
                     <HandlerShowMessage chatList={newMessage} user={user} data={data}/>
-              <div ref={messageListRef}></div>
+                   <div ref={messageListRef}></div>
         </div>
         <div className={cx('h-[60px] flex items-center px-3 py-2 text-gray-300 dark:text-gray-400 border-t border-gray-200 b-top relative z-[1] secondary-bg')}>
             <div className={cx('flex flex-nowrap text-xl')}>

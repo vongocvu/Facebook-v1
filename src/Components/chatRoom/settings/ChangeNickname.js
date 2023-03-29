@@ -109,12 +109,12 @@ const ChangeNickname = () => {
   return (
     <div id={`ChangeNickname${idGroup}`} className="fixed inset-0 dark:bg-black bg-white dark:bg-opacity-50 bg-opacity-40 z-50 flex items-center justify-center text-white">
     {loading && <LoadingChatBox/>}
-      <div id={`ContentNickname${idGroup}`} className="w-[600px] border dark:border-black border-gray-300 secondary-bg text-black dark:text-white  bg-white rounded-lg">
+      <div id={`ContentNickname${idGroup}`} className="w-[600px] border border-gray-300 b-full secondary-bg text-black dark:text-white  bg-white rounded-lg">
            <div className="h-[60px] py-5 font-bold text-xl flex items-center justify-center relative">
                <span className="">Nicknames</span>
                <FontAwesomeIcon onClick={handlerCancelChangeTheme} className='absolute right-[20px] secondary-bg bg-gray-300 cursor-pointer hover-dark py-3 px-4 rounded-full' icon={faXmark}/>
            </div>
-           <hr className="border dark:border-gray-900 border-gray-300"/>
+           <hr className="border b-full border-gray-300"/>
            <div className="grid grid-cols-1 gap-3 p-5">
                {
                 data.members?.map((member, index) => (

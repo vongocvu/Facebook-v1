@@ -30,8 +30,6 @@ const DetailPost = () => {
   const [nextBtn, setNextBtn] = useState(false);
   const [ loading, setLoading] = useState(false)
 
-console.log(GroupPost);
-
   useEffect(() => {
     const getPost = async () => {
       setLoading(true)

@@ -104,18 +104,18 @@ const CreateNewGroup = () => {
   return (
     <div id="Form-Contain" className="fixed inset-0 z-50 flex items-center justify-center dark:bg-black dark:bg-opacity-30 bg-white bg-opacity-30 ">
       
-       <div tabIndex="0" id="Form-Create-Group" className="flex flex-col h-[450px] w-[350px] bg-white rounded-lg overflow-hidden border border-gray-300 dark:border-black primary-bg py-3 px-5 relative primary-bg  dark:text-white">
+       <div tabIndex="0" id="Form-Create-Group" className="flex flex-col h-[450px] w-[350px] bg-white rounded-lg overflow-hidden border border-gray-300 b-full primary-bg py-3 px-5 relative primary-bg  dark:text-white">
           { loading && <Loading/>}
         <div className="font-bold text-lg mb-2 flex items-center justify-between">
              Create new group
              <FontAwesomeIcon onClick={cancelCreateGroup} className="hover:text-red-600 cursor-pointer text-2xl" icon={faXmark}/>
           </div>
-        <hr className="dark:border-black"/>
+        <hr className="b-full"/>
         <div className="p-2">
             <label>Name:</label>
             <input type="text" value={nameGroup} className="outline-0 pl-2 primary-bg " onChange={e => setNameGroup(e.target.value)}/>
         </div>
-        <hr className="dark:border-black"/>
+        <hr className="b-full"/>
         <div className="p-2 flex items-center flex-wrap">
             <label>To: </label>
             {
@@ -129,7 +129,7 @@ const CreateNewGroup = () => {
             }
             <input type="text" ref={inputRef} value={inputSearch} className="outline-0 pl-2 primary-bg " onChange={e=> setInputSearch(e.target.value)}/>
         </div>
-        <hr className="dark:border-black"/>
+        <hr className="b-full"/>
         <div className="w-full flex-1 overflow-y-scroll custom_scroll my-2 px-2">
             {
               dataSuggested.map((data, index) => (

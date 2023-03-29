@@ -55,7 +55,12 @@
     
     /* Track */
 .custom_scroll::-webkit-scrollbar-track {
-      box-shadow: inset 0 0 5px transparent;
+      background-color: #ffffff;
+      border-radius: 10px;
+}
+
+.dark .custom_scroll::-webkit-scrollbar-track {
+      background-color: #242526;;
       border-radius: 10px;
 }
     
