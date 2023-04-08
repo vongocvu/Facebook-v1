@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { faCheckCircle, faEdit, faEllipsis, faVideo } from "@fortawesome/free-solid-svg-icons"
+import { faEdit, faEllipsis, faVideo } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
@@ -20,7 +20,7 @@ const ListChats = ({ roomActive, show, handlerShowMessage, chatGlobal }) => {
 
  const [ ListMessage, setListMessage ] = useState([])
  const [ GroupNotSend, setGroupNotSend ] = useState([])
- const [connected, setConnected] = useState(false);
+ const [ connected, setConnected] = useState(false);
  const [ loading, setLoading ] = useState(false)
 
 
@@ -44,7 +44,7 @@ const ListChats = ({ roomActive, show, handlerShowMessage, chatGlobal }) => {
             }
         }))
       })
-    })
+},[ListMessage])
 
     
  useEffect(() => {
@@ -57,7 +57,7 @@ const ListChats = ({ roomActive, show, handlerShowMessage, chatGlobal }) => {
          await axios.get(`${process.env.REACT_APP_API}/v1/group/getMyGroups/${user._id}`)
          .then((response) => {
           setListMessage(response.data.sort((a, b) => new Date(b.message?.createdAt) - new Date(a.message?.createdAt)))
-          setGroupNotSend(response.data.filter(data => !data.message.sended.includes(user._id)))
+          setGroupNotSend(response.data.filter(data => !data?.message?.sended?.includes(user._id)))
           setLoading(false)
         })
       }  
@@ -69,11 +69,12 @@ const ListChats = ({ roomActive, show, handlerShowMessage, chatGlobal }) => {
        chatGlobal && handlerShowMessage(idGroup)
     if (GroupNotSend.some( data => data.Group._id === idGroup)) {
       setGroupNotSend(() => GroupNotSend.filter((group) => group.Group._id !== idGroup))
-      await axios.post(`${process.env.REACT_APP_API}/v1/message/sendMessage/${idMessage}`, {
+      idMessage !== undefined && await axios.post(`${process.env.REACT_APP_API}/v1/message/sendMessage/${idMessage}`, {
           user: user._id
       })
     }
  }
+
 
   return show && (
      <div className="w-full h-full flex flex-col secondary-bg bg-white b-right p-3 primary-text border-r border-gray-200">
@@ -103,24 +104,24 @@ const ListChats = ({ roomActive, show, handlerShowMessage, chatGlobal }) => {
                   </div>
                   <div className={`flex-1 overflow-hidden ${GroupNotSend.some( data => data.Group._id === message?.Group?._id) ? 'opacity-100 text-white font-medium' :  'opacity-80 '}  `}>
                           <div className="flex justify-between">
-                             <h4 className="text-md">{message?.Group?.name ? message?.Group?.name : message?.friend?.user?.username} </h4>
+                             <h4 className="text-md text-gray-500 primary-text">{message?.Group?.name ? message?.Group?.name : message?.friend?.user?.username} </h4>
                              <div className="flex items-center">
                                 
                                   
                                   <div className={`${GroupNotSend.some( data => data.Group._id === message?.Group?._id) ? 'text-blue-400' : 'text-gray-500'}  ml-2 `}>
-                                      <FontAwesomeIcon icon={faCheckCircle}/>
+                                      <img className="w-[15px] h-[15px] rounded-full" src={message?.message?.sender.avatar} alt="avatar" />
                                   </div>
                                 
                                 <span className="text-xs ml-2">{Moment(message?.message?.createdAt)}</span>
                              </div>
                           </div>
-                          <div className={`text-sm text-over`}>
+                          <div className={`${GroupNotSend.some( data => data.Group._id === message?.Group?._id) && 'text-blue-400'} text-sm text-over`} >
                             { message?.Group?.typeGroup !== 2 ? "" : message?.message?.sender._id !== user?._id 
                                 ? <span >{message?.message?.sender?.username || 'Fb'}: </span> 
                                 : <span className="">You: </span>} 
 
-                                <span className={`${GroupNotSend.some( data => data.Group._id === message?.Group?._id) && 'text-blue-400'}`} >
-                                   {message?.message?.content || "You have become friends, let's get to know each other !"} 
+                                <span >
+                                   {message?.message?.content || (message?.message?.image ? "Sended a photos..." : "You have become friends, let's get to know each other !")} 
                                 </span>
                           </div>
                   </div>

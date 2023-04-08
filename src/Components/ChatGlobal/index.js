@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import axios from "axios";
 
 import ChatGroup from "../chatRoom/ChatGroup";
@@ -15,13 +15,13 @@ const ChatGlobal = ({ chatWindow, roomMessage }) => {
   const dispatch = useDispatch();
 
   const [ConversationList, setConversationList] = useState([]);
-  const { rooms, user, roomsWait } = useSelector((states) => ({ ...states }));
+  const { rooms, user, roomsWait, StatuschatWindow } = useSelector((states) => ({ ...states }));
   const [connected, setConnected] = useState(false);
   const [IsChatWindow, setIsChatWindow] = useState(false);
 
   useEffect(() => {
     chatWindow && setIsChatWindow(true)
-  },[IsChatWindow])
+  },[chatWindow])
 
   const ChatBox = document.querySelectorAll(".ChatBox");
 
@@ -103,6 +103,23 @@ const ChatGlobal = ({ chatWindow, roomMessage }) => {
   };
 
   useEffect(() => {
+    rooms.forEach(room => {
+      dispatch({
+        type: "DELETE_ROOM",
+        payload: room,
+      });
+    })
+
+    roomsWait.forEach(room => {
+      dispatch({
+        type: "DELETE_ROOM_WAIT",
+        payload: room,
+      });
+    })
+
+  },[StatuschatWindow])
+
+  useEffect(() => {
     rooms.includes(rooms[rooms.length - 1]) 
     && roomsWait.some(room => room._id === rooms[rooms.length - 1]) 
     && roomsWait.forEach(room => {
@@ -115,8 +132,8 @@ const ChatGlobal = ({ chatWindow, roomMessage }) => {
 
   return (
     user && (
-      <div className={`${IsChatWindow ? 'relative flex-1 ' : ' pr-[100px]'}  fixed right-0 bottom-0 flex justify-end `}>
-        {!IsChatWindow &&<div className="w-[80px] flex flex-col pb-5 h-auto absolute bottom-0 right-0">
+      <div className={`${IsChatWindow ? 'relative flex-1 ' : ' pr-[100px]'}  fixed right-0 z-40 bottom-0 flex justify-end `}>
+        <div className="w-[70px] flex flex-col pb-5 h-auto absolute bottom-0 right-0">
           {roomsWait?.map((roomWait, index) => (
                 <div
                   key={index}
@@ -137,7 +154,6 @@ const ChatGlobal = ({ chatWindow, roomMessage }) => {
                 </div>
               ))}
             </div>
-        } 
         <div className={`${IsChatWindow ? ' w-full ' : 'flex'}`}>
           {ConversationList?.map((room, index) =>
             room.typeGroup === 1 ? (
@@ -152,4 +168,4 @@ const ChatGlobal = ({ chatWindow, roomMessage }) => {
   );
 };
 
-export default ChatGlobal;
+export default memo(ChatGlobal);

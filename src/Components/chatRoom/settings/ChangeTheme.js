@@ -2,7 +2,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import  { useEffect, useState } from 'react'
+import  { useState } from 'react'
 import { useSelector } from 'react-redux'
 
 
@@ -28,8 +28,6 @@ const ChangeTheme = () => {
       message.style.backgroundImage = theme
     })
 
-    setChoosedTheme(theme)
-
     document.querySelectorAll('.codeColor').forEach(code => {
       code.classList.remove('dark:bg-gray-700')
       code.classList.remove('bg-gray-300')
@@ -39,11 +37,12 @@ const ChangeTheme = () => {
     event.target.closest('.codeColor').classList.add('bg-gray-300')
 
    const submitBtn =  document.getElementById('submitChangeTheme')
-    submitBtn.disabled = false
+   submitBtn.disabled = false
     submitBtn.style.color = 'white' 
     submitBtn.style.backgroundColor = 'blue'
     submitBtn.classList.remove('cursor-not-allowed')
-
+    
+    setChoosedTheme(theme)
   }
 
   const handlerCancelChangeTheme = async () => {
@@ -95,13 +94,6 @@ const ChangeTheme = () => {
      }
   }
 
-  useEffect(() => {
-    document.getElementById(`changeTheme${idGroup}`).addEventListener('click', (e) => {
-        if (!document.getElementById(`ContentTheme${idGroup}`)?.contains(e.target)) {
-           handlerCancelChangeTheme()
-         }
-      })
-  })
 
   return (
     <div id={`changeTheme${idGroup}`} className="fixed inset-0 dark:bg-black bg-white dark:bg-opacity-50 bg-opacity-40 z-50 flex items-center justify-center text-white">

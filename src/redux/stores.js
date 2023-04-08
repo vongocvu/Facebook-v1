@@ -7,6 +7,7 @@ import roomWaitReducer from './reducers/roomwaitRuducer'
 import userOnlineReducer from './reducers/userOnlineReducer'
 import onOffForm from './reducers/onOffForm'
 import verifyForm from './reducers/verifyForm'
+import chatWindow from './reducers/chatWindow'
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   roomsWait: roomWaitReducer,
   usersOnline: userOnlineReducer,
   formOn: onOffForm,
-  verifyForm: verifyForm
+  verifyForm: verifyForm,
+  StatuschatWindow: chatWindow
 });
 
 const stores = createStore(rootReducer);

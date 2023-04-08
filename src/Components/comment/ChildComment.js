@@ -14,6 +14,8 @@ const ChildComment = ({inputCommenting_child, post, parent_id}) => {
       const [ Comments, setComments ] = useState([])
       const [ inputCommenting_children, setInputCommenting_childrend ] = useState({})
       const [ newComments, setNewComments ] = useState([])
+      const [ limit, setLimit ] = useState(2)
+      const [ hasMore, setHasMore ] = useState(true)
       const lastCommentRef3 = useRef(null)
 
        useEffect(() => {
@@ -31,17 +33,22 @@ const ChildComment = ({inputCommenting_child, post, parent_id}) => {
       useEffect(() => {
          const fecthData = async () => {
           parent_id !== undefined &&
-            await axios.get(`${process.env.REACT_APP_API}/v1/comment/getByParent/${parent_id}`)
+            await axios.get(`${process.env.REACT_APP_API}/v1/comment/getByParent/${parent_id}/${limit}`)
             .then(response => {
               setComments(response.data)
               setNewComments([])
+              response.data.length < limit && setHasMore(false)
             })
          }
          fecthData()
-      },[parent_id])
+      },[parent_id, limit])
 
       const handlerShowInput = (idComment, username) => {
          setInputCommenting_childrend({idComment: parent_id, username, isReply: true})
+       }
+
+       const handleViewMoreComment = () => {
+          setLimit(limit + 5)
        }
 
   return (
@@ -64,6 +71,12 @@ const ChildComment = ({inputCommenting_child, post, parent_id}) => {
         }
  
            <div ref={lastCommentRef3}></div>
+           {
+             hasMore &&
+             <div className="pl-10 mb-2">
+                  <span onClick={handleViewMoreComment} className="hover:underline primary-text cursor-pointer text-sm font-medium">View more comments</span>
+             </div>
+           }
 
         { (inputCommenting_children?.isReply || inputCommenting_child?.isReply ) &&
           (inputCommenting_child?.idComment === parent_id || inputCommenting_children?.idComment === parent_id) &&
@@ -71,7 +84,6 @@ const ChildComment = ({inputCommenting_child, post, parent_id}) => {
                <InputComment isFocus={inputCommenting_child?.username || inputCommenting_children?.username} post={post} parent_id={parent_id} level="3"/>
              </div> 
         }
-
         
      </>
   )

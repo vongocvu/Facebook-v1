@@ -16,6 +16,8 @@ import ShowTabName from "../tooltip";
 import AddImages from "../posts/postImages/addImages";
 import PostAudience from "./PostAudience";
 import Loading from "../loadings/LoadingChatBox";
+import FormTags from "./FormTags";
+import FormFeeling from "./FormFeeling";
 
 const CreateNewPost = () => {
   const dispatch = useDispatch();
@@ -27,6 +29,10 @@ const CreateNewPost = () => {
   const [formShare, setFormShare] = useState(false);
   const [dataShare, setDataShare] = useState("1");
   const [loading, setLoading] = useState(false);
+  const [tags, setTags] = useState([])
+  const [showFormTag, setShowFormTag] = useState(false);
+  const [feeling, setFeeling] = useState({})
+  const [showFormFeeling, setShowFormFeeling] = useState(false);
 
   const inputRef = useRef(null);
   const parentRef = useRef(null);
@@ -34,20 +40,20 @@ const CreateNewPost = () => {
   const btnRef = useRef(null);
 
   useEffect(() => {
-    if (input !== "" || DataImages.length > 0) {
+    if (input !== "" || DataImages.length > 0 || Object.keys(feeling).length || tags.length > 0) {
       btnRef?.current?.classList.add("bg-blue-500");
       btnRef?.current?.classList.add("text-white");
       btnRef?.current?.classList.remove("comment-bg");
       btnRef?.current?.classList.remove("bg-gray-200");
       btnRef?.current?.classList.remove("cursor-not-allowed");
-    } else if (input === "" || DataImages.length === 0) {
+    } else if (input === "" || DataImages.length === 0 || !Object.keys(feeling).length || tags.length === 0) {
       btnRef?.current?.classList.remove("bg-blue-500");
       btnRef?.current?.classList.remove("text-white");
       btnRef?.current?.classList.add("bg-gray-200");
       btnRef?.current?.classList.add("comment-bg");
       btnRef?.current?.classList.add("cursor-not-allowed");
     }
-  }, [input, DataImages]);
+  }, [input, DataImages, tags, feeling]);
 
   const selectedImages = (images) => {
     setDataImages([...images]);
@@ -58,6 +64,13 @@ const CreateNewPost = () => {
       type: "ON-FORM-LEAVE",
     });
   };
+
+  useEffect(() => {
+    formOn.type === "CreatePostPhotos" && setAddImage(true)
+    formOn.type === "CreatePostFeeling" && setShowFormFeeling(true)
+    formOn.type && setDataShare("2")
+    formOn.friends && setTags([formOn.friends])
+  },[formOn])
 
   useEffect(() => {
     parentRef?.current?.addEventListener("click", (e) => {
@@ -73,12 +86,18 @@ const CreateNewPost = () => {
   });
 
   useEffect(() => {
-    verifyForm === "OK" && setFormShare(false);
-    verifyForm === "OK" && setInput("");
-    verifyForm === "OK" &&
+
+    if (verifyForm === "OK") {
+      setAddImage(false)
+      setDataShare("1")
+      setFormShare(false);
+      setInput("");
+      setTags([])
+      setShowFormTag(false)
       dispatch({
         type: "OFF-FORM",
       });
+    }
   }, [verifyForm]);
 
   const handlerShowFormShare = () => {
@@ -105,16 +124,49 @@ const CreateNewPost = () => {
     setAddImage(true);
   };
 
+  const handlerShowTags = () => {
+    setShowFormTag(true)
+  }
+
+  const handlerShowTagsOnForm = () => {
+    setShowFormTag(false)
+  }
+
+  const handlerNewtags = (newtags) => {
+    setTags(newtags)
+  }
+
+  const handlerShowFeeling = () => {
+    setShowFormFeeling(true)
+  }
+
+  const handlerHideFeeling = () => {
+    setShowFormFeeling(false)
+  }
+
+  const handlerGetFeeling = (data) => {
+    setFeeling(data)
+  }
+
+
   const submitPost = async () => {
     setInput("");
     if (input !== "" || DataImages.length > 0) {
       setLoading(true);
+
+      const dataTags = []
+
+      tags?.forEach((tag) => {
+        dataTags.push(tag._id);
+      })
 
       await axios
         .post(`${process.env.REACT_APP_API}/v1/post/addPost`, {
           author: user._id,
           content: input,
           status_share: dataShare,
+          tags: dataTags,
+          feeling: feeling
         })
         .then((response) => {
           
@@ -137,7 +189,7 @@ const CreateNewPost = () => {
   };
 
   return (
-    formOn === "CreatePost" && (
+    (formOn === "CreatePost" || formOn?.type) && (
       <div
         ref={parentRef}
         className="fixed top-0 w-full h-screen bg-white dark:bg-black bg-opacity-60 dark:bg-opacity-60 flex-center z-50"
@@ -145,7 +197,7 @@ const CreateNewPost = () => {
         {loading && <Loading />}
         <div
           ref={childRef}
-          className="w-[500px] secondary-bg rounded-xl bg-white shadow-dark p-4 pt-0 shadow-md shadow-gray-400 overfow-hidden"
+          className="w-[550px] secondary-bg rounded-xl bg-white shadow-dark p-4 pt-0 shadow-md shadow-gray-400 overfow-hidden"
         >
           <div className="h-[65px] dark:text-white flex-center relative b-bottom border-b border-gray-300">
             <h4 className="font-bold text-xl">Create post</h4>
@@ -166,7 +218,32 @@ const CreateNewPost = () => {
               />
             </div>
             <div className="">
-              <h4 className="font-medium mb-">{user?.username}</h4>
+              <div className="font-medium mb-1 flex flex-wrap">{user?.username} 
+              
+              {
+                Object.keys(feeling).length && (
+                  <span className="ml-1 flex flex-wrap">
+                    is <img className="w-[25px] h-[25px] mx-2" src={feeling?.icon} alt="feeling"/>
+                    feeling <span className="ml-1">{feeling?.name}</span>
+                  </span>
+                )
+              }
+              
+              {
+                tags?.length === 1 
+                ? tags?.map((tag, i) => (
+                  (<span key={i} className="ml-1 flex  flex-wrap">
+                   <span className="opacity-70 font-thin">with</span>
+                   <div className="mx-1">{tag?.username}</div>
+                </span> )
+                ))
+                : tags?.length > 1 && (<span className="ml-1 flex">
+                   <span className="opacity-70 font-thin">with</span>
+                   <span className="mx-1">{tags[0]?.username}</span>
+                   <span className="opacity-70 font-thin">and</span>
+                   <div className="mx-1">{tags?.length} others</div>
+                </span> )
+              }</div>
               <button
                 onClick={handlerShowFormShare}
                 className="flex-center text-sm font-bold primary-text item-bg px-2 py-1 rounded-lg hover:opacity-80"
@@ -184,7 +261,7 @@ const CreateNewPost = () => {
               ref={inputRef}
               value={input}
               onChange={handlerInput}
-              placeholder={`What's your on mind, ${user?.username}?`}
+              placeholder={(formOn?.friends && tags[0]) ? `Write somethings to ${tags[0]?.username}` : `What's your on mind, ${user?.username}?`}
               minRows={4}
               maxRows={10}
             />
@@ -204,7 +281,7 @@ const CreateNewPost = () => {
                   onClick={handlerShowAddImage}
                   className={`${
                     addImage && "comment-bg"
-                  } w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover  cursor-pointer rounded-full `}
+                  } w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover ml-[5px]  cursor-pointer rounded-full `}
                 >
                   <img
                     className="w-[24px] h-[24px]"
@@ -214,7 +291,7 @@ const CreateNewPost = () => {
                 </div>
               </ShowTabName>
               <ShowTabName tabName="Tag people">
-                <div className="w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover  cursor-pointer rounded-full ">
+                <div onClick={handlerShowTags} className={` ${(showFormTag || tags.length !== 0) && 'comment-bg'} ml-[5px] w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover cursor-pointer rounded-full `}>
                   <img
                     className="w-[24px] h-[24px]"
                     src="https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/b37mHA1PjfK.png"
@@ -222,8 +299,11 @@ const CreateNewPost = () => {
                   />
                 </div>
               </ShowTabName>
+              {
+                showFormTag && <FormTags show={handlerShowTagsOnForm} newData={handlerNewtags} data={tags}/>
+              }
               <ShowTabName tabName="Feeling/activity">
-                <div className="w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover  cursor-pointer rounded-full ">
+                <div onClick={handlerShowFeeling} className={`${(showFormFeeling || Object.keys(feeling).length) && 'comment-bg'} w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover ml-[5px]  cursor-pointer rounded-full `}>
                   <img
                     className="w-[24px] h-[24px]"
                     src="https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/Y4mYLVOhTwq.png"
@@ -231,8 +311,11 @@ const CreateNewPost = () => {
                   />
                 </div>
               </ShowTabName>
+              {
+                showFormFeeling && <FormFeeling data={feeling} show={handlerHideFeeling} getData={handlerGetFeeling}/>
+              }
               <ShowTabName tabName="Check in">
-                <div className="w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover  cursor-pointer rounded-full ">
+                <div className="w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover  ml-[5px] cursor-pointer rounded-full ">
                   <img
                     className="w-[24px] h-[24px]"
                     src="https://static.xx.fbcdn.net/rsrc.php/v3/y1/r/8zlaieBcZ72.png"
@@ -241,7 +324,7 @@ const CreateNewPost = () => {
                 </div>
               </ShowTabName>
               <ShowTabName tabName="Life event">
-                <div className="w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover  cursor-pointer rounded-full ">
+                <div className="w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover ml-[5px]  cursor-pointer rounded-full ">
                   <img
                     className="w-[24px] h-[24px]"
                     src="	https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/pkbalDbTOVI.png"
@@ -250,7 +333,7 @@ const CreateNewPost = () => {
                 </div>
               </ShowTabName>
               <ShowTabName tabName="More">
-                <div className="w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover  cursor-pointer rounded-full ">
+                <div className="w-[40px] h-[40px] primary-text flex-center hover-dark text-2xl dark-hover ml-[5px]  cursor-pointer rounded-full ">
                   <FontAwesomeIcon icon={faEllipsis} />
                 </div>
               </ShowTabName>

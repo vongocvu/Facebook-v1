@@ -102,7 +102,7 @@ const CreateNewGroup = () => {
     })
 
   return (
-    <div id="Form-Contain" className="fixed inset-0 z-50 flex items-center justify-center dark:bg-black dark:bg-opacity-30 bg-white bg-opacity-30 ">
+    <div id="Form-Contain" className="fixed inset-0 z-[52] flex items-center justify-center dark:bg-black dark:bg-opacity-30 bg-white bg-opacity-30 ">
       
        <div tabIndex="0" id="Form-Create-Group" className="flex flex-col h-[450px] w-[350px] bg-white rounded-lg overflow-hidden border border-gray-300 b-full primary-bg py-3 px-5 relative primary-bg  dark:text-white">
           { loading && <Loading/>}

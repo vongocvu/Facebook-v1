@@ -14,6 +14,8 @@ const ChildrenComment = ({ inputCommenting, post, parent_id }) => {
       const [ Comments, setComments ] = useState([])
       const [ inputCommenting_children, setInputCommenting_children ] = useState({})
       const [ newComments, setNewComments ] = useState([])
+      const [ limit, setLimit ] = useState(1)
+      const [ hasMore, setHasMore ] = useState(true)
       const lastCommentRef2 = useRef(null)
 
    useEffect(() => {
@@ -28,22 +30,26 @@ const ChildrenComment = ({ inputCommenting, post, parent_id }) => {
       })
     })
       
-
       useEffect(() => {
          const fecthData = async () => {
           parent_id !== undefined && 
-            await axios.get(`${process.env.REACT_APP_API}/v1/comment/getByParent/${parent_id}`)
+            await axios.get(`${process.env.REACT_APP_API}/v1/comment/getByParent/${parent_id}/${limit}`)
             .then(response => {
               setComments(response.data)
               setNewComments([])
+              response.data.length < limit && setHasMore(false)
             })
          }
          fecthData()
-      },[parent_id])
+      },[parent_id, limit])
 
       const handlerShowInput = (idComment, username) => {
          setInputCommenting_children({idComment, username, isReply : true})
        }
+
+       const handleViewMoreComment = () => {
+        setLimit(limit + 5)
+     }
 
   return (
      <>
@@ -65,6 +71,12 @@ const ChildrenComment = ({ inputCommenting, post, parent_id }) => {
             ))
           }
           <div ref={lastCommentRef2}></div>
+          {
+             hasMore &&
+             <div className="pl-10 mb-2">
+                  <span onClick={handleViewMoreComment} className="hover:underline primary-text cursor-pointer font-medium text-sm">View more comments</span>
+             </div>
+           }
 
         { inputCommenting?.isReply && inputCommenting?.idComment === parent_id && 
              <div className="pl-10 line-input">

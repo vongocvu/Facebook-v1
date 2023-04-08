@@ -2,7 +2,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { faCheck, faPen, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import  { useEffect, useState } from 'react'
+import  { useEffect, useRef, useState } from 'react'
 import LoadingChatBox from '../../loadings/LoadingChatBox'
 import classNames from 'classnames/bind'
 import axios from 'axios'
@@ -19,6 +19,9 @@ const ChangeNickname = () => {
   const { user } = useSelector(state => ({...state}))
    const navigate = useNavigate()
    const { typeGroup, idGroup } = useParams()
+
+   const submitBtn = useRef(null)
+   const formChangeRef = useRef(null)
 
   const [ loading, setLoading ] = useState(false)
   const [ data, setData ] = useState([])
@@ -44,21 +47,20 @@ const ChangeNickname = () => {
       navigate('/')
   }
 
-
-  useEffect(() => {
-    document.getElementById(`ChangeNickname${idGroup}`).addEventListener('click', (e) => {
-        if (!document.getElementById(`ContentNickname${idGroup}`)?.contains(e.target)) {
-           navigate('/')
-        }
-    })
-  })
-
-
   useEffect(() => {
      document.getElementById(`inputRef${editor}`)?.focus()
-    //  document.getElementById(`inputRef${editor}`)?.addEventListener('blur', () => {
-    //     setEditor("")
-    //  })
+     formChangeRef?.current?.addEventListener('click', e => handlerClear(e))
+
+     const handlerClear = (e) => {
+      if (!submitBtn?.current?.contains(e.target)) {
+        setEditor("")
+      }
+     }
+
+     return () => {
+      formChangeRef?.current?.removeEventListener('click', e => handlerClear(e))
+     }
+
   },[editor])
 
 
@@ -109,10 +111,10 @@ const ChangeNickname = () => {
   return (
     <div id={`ChangeNickname${idGroup}`} className="fixed inset-0 dark:bg-black bg-white dark:bg-opacity-50 bg-opacity-40 z-50 flex items-center justify-center text-white">
     {loading && <LoadingChatBox/>}
-      <div id={`ContentNickname${idGroup}`} className="w-[600px] border border-gray-300 b-full secondary-bg text-black dark:text-white  bg-white rounded-lg">
+      <div id={`ContentNickname${idGroup}`} ref={formChangeRef} className="w-[600px] border border-gray-300 b-full secondary-bg text-black dark:text-white  bg-white rounded-lg">
            <div className="h-[60px] py-5 font-bold text-xl flex items-center justify-center relative">
                <span className="">Nicknames</span>
-               <FontAwesomeIcon onClick={handlerCancelChangeTheme} className='absolute right-[20px] secondary-bg bg-gray-300 cursor-pointer hover-dark py-3 px-4 rounded-full' icon={faXmark}/>
+               <FontAwesomeIcon onClick={handlerCancelChangeTheme} className='absolute cart-bg right-[20px] secondary-bg bg-gray-300 cursor-pointer hover-dark py-3 px-4 rounded-full' icon={faXmark}/>
            </div>
            <hr className="border b-full border-gray-300"/>
            <div className="grid grid-cols-1 gap-3 p-5">
@@ -152,7 +154,7 @@ const ChangeNickname = () => {
                                           :  member.user.username
                                   }
                               />
-                              <FontAwesomeIcon onClick={() => submitChangeNickname(member.user._id)} className='w-[40px] h-[20px] dark:hover:bg-gray-700 hover:bg-gray-300 hover:text-green-600 ml-2 py-2 rounded-full' icon={faCheck}/>
+                              <FontAwesomeIcon ref={submitBtn} onClick={() => submitChangeNickname(member.user._id)} className='w-[40px] h-[20px] dark:hover:bg-gray-700 hover:bg-gray-300 hover:text-green-600 ml-2 py-2 rounded-full' icon={faCheck}/>
                             </>
                           )}
                         </div>

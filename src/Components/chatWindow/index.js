@@ -1,15 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useParams } from "react-router-dom"
-
-
 import ChatGlobal from "../ChatGlobal"
 import ListChats from "../listChats"
+import { memo } from "react"
 
 const ChatWindow = () => {
-    
+
+
   const { id } = useParams()
- 
+
   return (
-    <div className="fixed inset-0 pt-[60px] dark:bg-black bg-white z-20 flex">
+    <div className="fixed inset-0 pt-[60px] dark:bg-black bg-white z-50 flex">
          <div className=" max-md:hidden md:w-[40%] lg:w-[30%] xl:w-[20%]">
             <ListChats show={true} roomActive={id}/>
          </div>
@@ -20,4 +21,4 @@ const ChatWindow = () => {
   )
 }
 
-export default ChatWindow
+export default memo(ChatWindow)

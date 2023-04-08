@@ -3,10 +3,9 @@ import classNames from "classnames/bind";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader, faClapperboard, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom"
-import axios from "axios"
-import InfiniteScroll from "react-infinite-scroll-component";
+
 
 import styles from "./home.module.scss";
 import Stories from "../slides/Stories";
@@ -14,10 +13,10 @@ import IgnoreDynamic from '../navigation/ignore_dynamic'
 import Header from '../Header'
 import navBarHome from '../data/navBarHome'
 import Store from '../data/Stories'
-import Post from '../posts'
+import ShowPost from '../posts'
 import UserList from "../UserList";
 import GroupList from "../GroupList";
-import CreateNewPost from "../forms/CreateNewPost"
+import { memo } from "react";
 const socket = require('socket.io-client')?.(process.env.REACT_APP_API)
 
 const cx = classNames.bind(styles);
@@ -25,44 +24,22 @@ const Home = () => {
   const dispatch = useDispatch()
 
   const { user, usersOnline } = useSelector(state => ({ ...state }))
-  const [ Posts, setPosts ] = useState([])
-  const [ hasMore, setHasMore ] = useState(true)
-  const [ limit, setLimit ] = useState(1)
-
-     useEffect(() => {
-        user && socket.emit('user_connected', user)
-        user && socket.emit('get_users_online', user)
-      },[])
   
-      useEffect(() => {
-          socket.once('UsersOnline', users => {
+  useEffect(() => {
+      user && socket.emit('user_connected', user)
+      user && socket.emit('get_users_online', user)
+    },[])
+    
+    useEffect(() => {
+        socket.once('UsersOnline', users => {
             usersOnline.length === 0 && dispatch({
-                  type: "ADD_USERS_ONLINE",
-                  payload: users
-                })
+                type: "ADD_USERS_ONLINE",
+                payload: users
             })
-      },[])
-
-      const fecthData = async () => {
-        console.log("1213");
-          await axios.get(`${process.env.REACT_APP_API}/v1/post/getPosts/${user._id}/${limit}`)
-          .then(response => {
-              setPosts([...response.data])
-              if ( response.data.length < limit) {
-                  setHasMore(false)
-              } else {
-                  setLimit(limit + 1)
-              }
-          })
-      }
-
-      useEffect(() => {
-         fecthData()
-      },[])
-
-      const fetchMoreData = () => {
-        hasMore && fecthData()
-      }
+        })
+    },[])
+    
+   
 
       useEffect(() => {
           socket.on('user_connecting', newUser => {
@@ -107,12 +84,31 @@ const Home = () => {
         })
       }
 
+      const showFormCreatePostPhotos = () => {
+        dispatch({
+            type: 'ON-FORM',
+            payload: {
+                type: "CreatePostPhotos"
+            }
+        })
+      }
+
+      const showFormCreatePostFeeling = () => {
+        dispatch({
+            type: 'ON-FORM',
+            payload: {
+                type: "CreatePostFeeling"
+            }
+        })
+      }
+
       return (
         <>
            <div className="w-full flex flex-col bg-gray-100">
                <Header/>
                <div className="grid grid-cols-12 mt-[60px] primary-bg ">
                     <div className='max-lg:hidden h-body sm:max-lg:hidden lg:col-span-2 py-3 px-2 sticky left-0 top-[60px] primary-bg '>
+                         <IgnoreDynamic text={user?.username} image={user?.avatar} to={`profile/${user._id}`}/>
                         {
                             navBarHome.navLeft.map((data, index) => (
                                 <IgnoreDynamic key={index} text={data.name} svg={data.icon} to={data.path}/>
@@ -152,12 +148,12 @@ const Home = () => {
                                     <span className={cx("font-medium ml-2")}>Live video</span>
                                 </div>
 
-                                <div className={cx("col-span-4 flex place-content-center py-[15px] border-blue-600 items-center cursor-pointer hover-dark hover:bg-gray-100 mx-1 rounded-md")}>
+                                <div onClick={showFormCreatePostPhotos} className={cx("col-span-4 flex place-content-center py-[15px] border-blue-600 items-center cursor-pointer hover-dark hover:bg-gray-100 mx-1 rounded-md")}>
                                     <img src="https://static.xx.fbcdn.net/rsrc.php/v3/y7/r/Ivw7nhRtXyo.png" alt=""/>
                                     <span className={cx("font-medium ml-2")}>Photo/video</span>
                                 </div>
 
-                                <div className={cx("col-span-4 flex place-content-center py-[15px] border-blue-600 items-center cursor-pointer hover-dark hover:bg-gray-100 mx-1 rounded-md")}>
+                                <div onClick={showFormCreatePostFeeling} className={cx("col-span-4 flex place-content-center py-[15px] border-blue-600 items-center cursor-pointer hover-dark hover:bg-gray-100 mx-1 rounded-md")}>
                                     <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/Y4mYLVOhTwq.png" alt=""/>
                                     <span className={cx("font-medium ml-2")}>Feeling/activity</span>
                                 </div>
@@ -165,22 +161,7 @@ const Home = () => {
                         </div>
 
                             <div className="max-md:order-3 w-[700px] max-md:w-[100%] max-lg:w-[600px] rounded-lg">
-                            <InfiniteScroll
-                                dataLength={Posts.length}
-                                next={fetchMoreData}
-                                hasMore={hasMore}
-                                loader={<h4 className="text-center my-4">Loading...</h4>}
-                                endMessage={<div className="text-center my-4">It is the post last !</div>}
-                            >
-                                {
-                                    Posts.map((post, i) => (    
-                                            <Post key={i}  data={post}/>
-                                            )
-                                        )
-                                }
-
-                            </InfiniteScroll>
-                                
+                                  <ShowPost/>
                             </div>
                         </div>
 
@@ -190,10 +171,9 @@ const Home = () => {
                     </div>
                 </div>
               </div>
-              <CreateNewPost/>
              <Outlet/>
             </>
       )
 }
 
-export default Home
+export default memo(Home)

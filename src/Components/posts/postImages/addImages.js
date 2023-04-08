@@ -41,14 +41,14 @@ const AddImages = (props) => {
     const handlerShowEditImages = () => {
       setEditImages(true)
     }
-
+    
     const handleHideEdit = () => {
       setEditImages(false)
     }
 
     const handlerDetailImage = (data) => {
       setDataFile(data)
-      console.log(data);
+      
     }
 
    return (

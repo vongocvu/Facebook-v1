@@ -3,7 +3,6 @@ import { faChevronDown, faCirclePlus, faGift, faImage, faMinus, faNoteSticky, fa
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState, useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import debounce from 'lodash.debounce';
 
 import classNames from "classnames/bind"
 import io from 'socket.io-client'
@@ -15,6 +14,7 @@ import SettingsChatBox from "./forms/settingOnChatBox"
 import ShowTabName from "../tooltip"
 import FirstChat from "./message/firstChat"
 import HandlerShowMessage from "./message/handlerShowMessage"
+import LoadingChatBox from "../loadings/LoadingChatBox";
 
 
 
@@ -30,7 +30,8 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
   const messageListRef = useRef(null);
   const inputRef = useRef(null);
   const oldMessageRef = useRef(null);
-  const BoxChatRef = useRef(null);
+  const fileRef = useRef(null);
+  const showOptionsBtn = useRef(null);
 
   const [ inputChat, setInputChat ] = useState('')
   const [ ChatList, setChatList ] = useState([])
@@ -42,6 +43,11 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
   const [ newMessage, setNewMessage ] = useState([])
   const [ IsChatting, setIsChatting ] = useState(false)
   const [ HasMore, setHasMore ] = useState(true)
+  const [ image, setImage ] = useState([])
+  const [ showImage, setShowImage ] = useState("")
+  const [ loading, setLoading ] = useState(false)
+  const [ newIdMessage, setNewIdMessage ] = useState({})
+
 
 
   useEffect(() => {
@@ -49,17 +55,10 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
     !chatWindow && !rooms.includes(data._id) && setHidden(false)
   },[rooms])
 
-
-
-    
-
-    
-
   useEffect(() => {
     chatWindow && setHidden(false)
     data._id === roomChating && setHidden(true)
   },[roomChating])
-  
 
  useEffect(() => {
   if (rooms.length > 3) {
@@ -91,70 +90,79 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
     messageListRef?.current && messageListRef.current.scrollIntoView()
     socket.on('message', message => {
       if (message.group === data._id ) {
-
+        
            message.sender._id !== user._id && setIsChatting(true)
-
-            dispatch({
+           dispatch({
               type: "ADD_ROOM",
               payload: message.group
             })
+            setNewMessage([...newMessage, message])
             !chatWindow && setHidden(true)
-        setNewMessage([...newMessage, message])
-
-      }
+        }
     })
+  }, [newMessage])
+
+  useEffect(() => {
+    if ( newMessage?.length > 0 && newMessage[newMessage.length - 1]?.content === newIdMessage?.content) {
+      newMessage[newMessage.length - 1]._id = newIdMessage?._id
+      setNewMessage([...newMessage])
+    }
+  },[newIdMessage, newMessage])
+
+
+  useEffect(() => {
+    socket.on('imageMessage', data => {
+      newMessage.forEach(message => {
+        if (message.image === data.image) {
+          Object.assign(message, {image: data.newImage})
+        }
+      })
+      setNewMessage(newMessage)
+    })
+    setNewMessage(newMessage)
   }, [newMessage])
 
   const getMessages = async () => {
       if (HasMore) {
+        setLoading(true)
         await axios.get(`${process.env.REACT_APP_API}/v1/message/getByGroup/${data._id}/${limit}`)
         .then((response) => {
           const messages = response.data.messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
           setChatList([...messages]);
-          if ( response.data.length < limit ) {
+          if ( response.data.messages.length < limit ) {
               setHasMore(false)
-          } else {
-            setLimit(limit + 20)
-          }
+            }
+          setLoading(false)
         })
     }
   }
-  
+
+
 
   useEffect(() => {
       getMessages()
-  },[hidden])
+  },[limit])
 
 
-  const debouncedHandleScroll = debounce(getMessages, 100);
-
-  useEffect(() => {
-    BoxChatRef?.current?.addEventListener('scroll', () => {
-         if (BoxChatRef?.current?.getBoundingClientRect().top <= oldMessageRef?.current?.getBoundingClientRect().top) {
-          debouncedHandleScroll()
-          BoxChatRef?.current?.removeEventListener('scroll', () => {})
-         }
-     })
-  })
-
-  const handlerSendMessage = () => {
-    if (inputChat.length > 0) {
-      handlerChat.senderMessage({
+  const handlerSendMessage = async (e) => {
+    if (inputChat.length > 0 || image.length > 0 ) {
+    const getIdMess = await handlerChat.senderMessage({
         sender: {
           _id: user._id,
           avatar: user.avatar,
           username: user.username
         },
         group: data._id,
+        image: showImage !== "" ? showImage : "",
+        file: image.length > 0 ? image : "",
         content: inputChat
       })
       setInputChat("")
+      setShowImage("")
+      setImage([])
+      setNewIdMessage(getIdMess)
     }
   } 
-
-  useEffect(() => {
-    chatWindow && inputRef?.current?.focus();
-  });
 
   const handlerDeleteChatBox = () => {
 
@@ -169,8 +177,13 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
     })
 
     setHidden(false);
+
   }
 
+
+  const handlerViewMoreMess = () => {
+    setLimit(limit + 10)
+  }
 
   const handlerWaitChatBox = () => {
     dispatch({
@@ -190,13 +203,9 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
     setFormOptions(!formOptions)
   }
 
-  useEffect(() => {
-      document.addEventListener("click", e => {
-        if (!document.getElementById(`btnShowOption${data._id}`)?.contains(e.target)) {
-          setFormOptions(false)
-        }
-      })
-  },[data._id])
+  const handlerHideOption = (e) => {
+    setFormOptions(false)
+  }
 
   const gotoProfile = () => {
     'notthing !'
@@ -206,10 +215,28 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
      setIsChatting(false)
   }
 
+  const handlerOpenFile = () => {
+    fileRef?.current?.click()
+  }
+
+  const handlerCancelImage = () => {
+    setShowImage("")
+  }
+
+  useEffect(() => {
+     image.length > 0 && setShowImage(URL.createObjectURL(image[0]))
+  }, [image])
+
+  useEffect(() => {
+    messageListRef?.current?.scrollIntoView()
+  },[hidden])
+
+  
+    
 return hidden && 
     (
       <div onClick={handlerSended} id={data._id} oldtheme={data.theme} tabIndex="0" className={cx(`${chatWindow ? 'w-full h-full active' : 'w-[350px] h-[500px] ml-2 shadow-2xl rounded-t-lg b-full border '} `,`flex flex-col bg-white rounded-t-lg secondary-bg dark:text-white relative `, 'ChatBox')}>
-        { formOptions && <SettingsChatBox idUser={friend.user._id} idGroup={data._id} show={formOptions} type="groupPrivate"/> }
+        { formOptions && <SettingsChatBox showOptionsBtn={showOptionsBtn?.current} idUser={friend.user._id} idGroup={data._id} hide={handlerHideOption} type="groupPrivate"/> }
         <div className={cx(`w-full px-1 ${chatWindow ? 'h-[65px] border-b b-bottom' : `h-[50px]  ${IsChatting ? 'bg-blue-500 text-white dark:text-white' : 'secondary-bg bg-white'}`} rounded-t-lg flex items-center justify-between p-1 border-b  b-bottom`,'actived')}>
                   <div className={`flex items-center ${!chatWindow && 'dark:hover:bg-gray-800 hover:bg-gray-200 hover-dark'} cursor-pointer pl-2 pr-3 rounded-lg`}>
                     <div className={cx('h-[40px] w-[40px] mr-2 rounded-full relative', `${usersOnline.some(userOnline => userOnline._id === friend.user._id) && 'border-[2px] border-white'}`)}>
@@ -223,7 +250,7 @@ return hidden &&
                       }
                     </div>
                     <ShowTabName tabName={`${!chatWindow ? 'Setting' : friend.user.username}`}> 
-                      <div id={`btnShowOption${data._id}`} onMouseDown={!chatWindow ? handlerOption : gotoProfile} className={cx('')}>
+                      <div ref={showOptionsBtn} id={`btnShowOption${data._id}`} onMouseDown={!chatWindow ? handlerOption : gotoProfile} className={cx('')}>
                           <h4 className={cx('font-medium leading-3 text-sm')}>{friend.nickname !== "" ? friend.nickname : friend.user.username}</h4>
                           <span className={cx('text-sm leading-3 font-thin ')}>{usersOnline.some(userOnline => userOnline._id === friend.user._id) ? 'Active now' : "10 minutes ago"}</span>
                       </div>
@@ -238,20 +265,30 @@ return hidden &&
            }
         </div>
 
-        <div ref={BoxChatRef} className={cx('flex-1 overflow-y-scroll text-sm pb-[5px] secondary-bg', 'custom_scroll')} > 
-                    {/* <FirstChat avatar={friend.user.avatar}/> */}
-                    <div ref={oldMessageRef}className="text-center my-4">Loading...</div>
+        <div className={cx('flex-1 overflow-y-scroll text-sm pb-[20px] secondary-bg', 'custom_scroll')} > 
+                   { loading && <LoadingChatBox /> }
+                   { !HasMore &&  <FirstChat avatar={friend.user.avatar}/> }
+                   { HasMore &&  <div onClick={handlerViewMoreMess} ref={oldMessageRef}className="text-center py-4 hover:underline hover:text-blue-300 cursor-pointer">... Click to view more ...</div> }
                     <HandlerShowMessage chatList={ChatList} user={user} data={data}/>
                     <HandlerShowMessage chatList={newMessage} user={user} data={data}/>
                    <div ref={messageListRef}></div>
         </div>
         <div className={cx('h-[60px] flex items-center px-3 py-2 text-gray-300 dark:text-gray-400 border-t border-gray-200 b-top relative z-[1] secondary-bg')}>
             <div className={cx('flex flex-nowrap text-xl')}>
-              <FontAwesomeIcon icon={faCirclePlus} className={cx('mr-3 cursor-pointer relative focusChatBox')}/>
-              <FontAwesomeIcon icon={faImage} className={cx('mr-3 cursor-pointer focusChatBox')}/>
-              <FontAwesomeIcon icon={faNoteSticky} className={cx('mr-3 cursor-pointer focusChatBox')}/>
-              <FontAwesomeIcon icon={faGift} className={cx('mr-3 cursor-pointer focusChatBox')}/>
+              <FontAwesomeIcon icon={faCirclePlus} className={cx('mr-3 cursor-pointer hover:translate-y-[-3px] transition relative focusChatBox')}/>
+              <FontAwesomeIcon onClick={handlerOpenFile} icon={faImage} className={cx('mr-3 cursor-pointer hover:translate-y-[-3px] transition focusChatBox')}/>
+              <input onChange={ e => setImage(e.target.files) } ref={fileRef} type="file" className="hidden" />
+              <FontAwesomeIcon icon={faNoteSticky} className={cx('mr-3 cursor-pointer hover:translate-y-[-3px] transition focusChatBox')}/>
+              <FontAwesomeIcon icon={faGift} className={cx('mr-3 cursor-pointer hover:translate-y-[-3px] transition focusChatBox')}/>
             </div>
+                {
+                  showImage !== "" && <div className="absolute right-[10px] bottom-[70px] w-[150px]" >
+                     <img className="w-full rounded-xl b-full" src={showImage} alt="anh" />
+                     <div onClick={handlerCancelImage} className="absolute top-[-10px] left-[-10px] text-xl w-[30px] h-[30px] flex-center bg-gray-900 dark:bg-white rounded-full cursor-pointer hover:text-red-500 b-full">
+                         <FontAwesomeIcon icon={faXmark} />
+                     </div>
+                  </div>
+                }
                 <input value={inputChat} 
                 ref={inputRef}
                 onChange={e =>  setInputChat(e.target.value)} 

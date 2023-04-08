@@ -19,11 +19,11 @@ import axios from "axios";
 
 import styles from "./chatRoom.module.scss";
 import handlerChat from "../functions/handlerChat";
-import LoadingChatBox from "../loadings/LoadingChatBox";
 import FirstChat from "./message/firstChat";
 import SettingsChatBox from "./forms/settingOnChatBox";
 import ShowTabName from "../tooltip";
 import HandlerShowMessage from "./message/handlerShowMessage";
+import LoadingChatBox from "../loadings/LoadingChatBox";
 
 
 const socket = io(process.env.REACT_APP_API);
@@ -39,16 +39,24 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
 
   const messageListRef = useRef(null);
   const inputRef = useRef(null);
+  const fileRef = useRef(null);
+  const oldMessageRef = useRef(null);
+  const showOptionsBtn = useRef(null);
+
 
   const [ inputChat, setInputChat ] = useState("");
   const [ ChatList, setChatList ] = useState([]);
 
   const [ hidden, setHidden ] = useState(false);
-  const [ getData, setGetData ] = useState(true);
-  const [ loading, setLoading ] = useState(true);
   const [ formOptions, setFormOptions ] = useState(false);
+  const [ limit, setLimit ] = useState(20)
+  
   const [ newMessage, setNewMessage ] = useState([])
   const [ IsChatting, setIsChatting ] = useState(false)
+  const [ image, setImage ] = useState([])
+  const [ showImage, setShowImage ] = useState("")
+  const [ HasMore, setHasMore ] = useState(true)
+  const [ loading, setLoading ] = useState(false)
 
 
 
@@ -71,29 +79,43 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
 
 
   useEffect(() => {
-    messageListRef?.current?.scrollIntoView()
-  })
+    socket.on('imageMessage', data => {
+      newMessage.forEach(message => {
+        if (message.image === data.image) {
+          Object.assign(message, {image: data.newImage})
+        }
+      })
+      setNewMessage(newMessage)
+    })
+    setNewMessage(newMessage)
+  },[newMessage])
+
 
   useEffect(() => {
-    if (hidden && getData) {
       const getMessages = async () => {
+        if (HasMore) {
+        setLoading(true)
         await axios
-          .get(`${process.env.REACT_APP_API}/v1/message/getByGroup/${data._id}`)
+          .get(`${process.env.REACT_APP_API}/v1/message/getByGroup/${data._id}/${limit}`)
           .then((response) => {
-            setChatList([...response.data.messages]);
-            setTimeout(() => {
-              messageListRef.current?.scrollIntoView();
-            }, 500);
-            setLoading(false);
+            setChatList([...response.data.messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))]);
+            if ( response.data.messages.length < limit ) {
+              setHasMore(false)
+            }
+           setLoading(false)
           });
       };
-      setGetData(false);
-      getMessages();
     }
-  }, [hidden]);
+      getMessages();
+  }, [limit]);
+
+  const handlerViewMoreMess = () => {
+    setLimit(limit + 10)
+  }
+
 
   const handlerSendMessage = (e) => {
-    if (inputChat.length > 0) {
+    if (inputChat.length > 0 || image.length > 0 ) {
       handlerChat.senderMessage({
         sender: {
           _id: user._id,
@@ -102,9 +124,12 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
         },
         group: data._id,
         content: inputChat,
+        image: showImage !== "" ? showImage : "",
+        file: image.length > 0 ? image : "",
       });
       setInputChat("");
-      e.target.focus();
+      setShowImage("")
+      setImage([])
     }
   };
 
@@ -125,13 +150,13 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
   }, [rooms]);
 
   useEffect(() => {
-    !chatWindow && rooms.includes(data._id) && setHidden(true);
-    !chatWindow && !rooms.includes(data._id) && setHidden(false);
+    !chatWindow && rooms.includes(data._id) && setHidden(true) 
+    !chatWindow && !rooms.includes(data._id) && setHidden(false)
   }, [rooms]);
 
   useEffect(() => {
     chatWindow && inputRef?.current?.focus();
-  });
+  },[]);
   
   useEffect(() => {
     chatWindow && setHidden(false);
@@ -171,15 +196,9 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
     setFormOptions(!formOptions);
   };
 
-  useEffect(() => {
-    document.addEventListener("click", (e) => {
-      if (
-        !document.getElementById(`btnShowOption${data._id}`)?.contains(e.target)
-      ) {
-        setFormOptions(false);
-      }
-    });
-  }, [data._id]);
+  const handlerHideOption = (e) => {
+    setFormOptions(false)
+  }
 
   const gotoProfile = () => {
     "notthing !";
@@ -188,6 +207,22 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
   const handlerSended = () => {
     setIsChatting(false)
   }
+
+  const handlerOpenFile = () => {
+    fileRef?.current?.click()
+  }
+
+  const handlerCancelImage = () => {
+    setShowImage("")
+  }
+
+  useEffect(() => {
+     image.length > 0 && setShowImage(URL.createObjectURL(image[0]))
+    }, [image])
+
+  useEffect(() => {
+    messageListRef?.current?.scrollIntoView()
+  },[hidden])
 
   return (
     hidden && (
@@ -208,7 +243,8 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
       >
         {formOptions && (
           <SettingsChatBox
-            show={formOptions}
+            showOptionsBtn={showOptionsBtn?.current}
+            hide={handlerHideOption}
             idGroup={data._id}
             type="groupPublic"
           />
@@ -235,6 +271,7 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
             />
             <ShowTabName tabName={`${!chatWindow ? "Setting" : data.name}`}>
               <div
+                ref={showOptionsBtn}
                 id={`btnShowOption${data._id}`}
                 onMouseDown={!chatWindow ? handlerOption : gotoProfile}
                 className={cx("")}
@@ -275,8 +312,9 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
             "flex-1 overflow-y-scroll text-sm pb-[5px] custom_scroll"
           )}
         >
-          {loading && <LoadingChatBox />}
-          <FirstChat avatar={data.avatar} />
+          { loading && <LoadingChatBox /> }
+          { !HasMore &&  <FirstChat avatar={data.avatar}/> }
+          { HasMore &&  <div onClick={handlerViewMoreMess} ref={oldMessageRef}className="text-center py-4 hover:underline hover:text-blue-300 cursor-pointer">... Click to view more ...</div> }
 
           <HandlerShowMessage chatList={ChatList} user={user} data={data}/>
           <HandlerShowMessage chatList={newMessage} user={user} data={data}/>
@@ -294,9 +332,11 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
               className={cx("mr-2 cursor-pointer focusChatBox")}
             />
             <FontAwesomeIcon
+              onClick={handlerOpenFile}
               icon={faImage}
               className={cx("mr-2 cursor-pointer focusChatBox")}
             />
+              <input onChange={ e => setImage(e.target.files) } ref={fileRef} type="file" className="hidden" />
             <FontAwesomeIcon
               icon={faNoteSticky}
               className={cx("mr-2 cursor-pointer focusChatBox")}
@@ -306,6 +346,14 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
               className={cx("mr-2 cursor-pointer focusChatBox")}
             />
           </div>
+          {
+              showImage !== "" && <div className="absolute right-[10px] bottom-[70px] w-[150px]" >
+                  <img className="w-full rounded-xl b-full" src={showImage} alt="anh" />
+                  <div onClick={handlerCancelImage} className="absolute top-[-10px] left-[-10px] text-xl w-[25px] h-[25px] flex-center bg-gray-900 dark:bg-gray-500 bg-gray-500 dark:text-black rounded-full cursor-pointer dark:hover:text-red-500 hover:text-red-500 b-full">
+                      <FontAwesomeIcon icon={faXmark} />
+                  </div>
+              </div>
+          }
           <input
             ref={inputRef}
             value={inputChat}

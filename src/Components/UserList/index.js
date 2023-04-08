@@ -6,7 +6,6 @@ import IgnoreDynamic from "../navigation/ignore_dynamic";
 const UserList = (props) => {
   const dispatch = useDispatch();
   const { rooms, user } = useSelector((state) => ({ ...state }));
-
     const createRoomPrivate = async (friend) => {
       await axios
         .post(`${process.env.REACT_APP_API}/v1/groupPrivate/add`, {
