@@ -7,7 +7,6 @@ import ShowTabName from "../../tooltip";
 import Moment from "../../moments";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import ImageMessage from "./imageMessage";
 import ReactsForm from "../../forms/likeForm";
 import { useSelector } from "react-redux";
 import { memo } from "react";
@@ -57,13 +56,13 @@ const MessageForMe = ({ message, theme, idGroup, realTimes, totalMessages }) => 
               onMouseLeave={ e => hideOptions(false)}
               className="w-full min-h-10 flex mb-[1px] px-1 justify-end relative">
           <div
-              className="flex items-center max-w-[80%] flex-row-reverse ">
+              className="flex items-center w-full flex-row-reverse ">
 
-            <div className="flex items-center">
+            <div className="flex items-center max-w-[70%] ">
               <ShowTabName tabName={times} position="top" theme="light">
                 <div
                   className={cx(
-                    "bg-black w-full text-white px-3 py-2 my-[2px] rounded-r-xl rounded-l-2xl bg-blue-500 break-all relative",
+                    "bg-black text-white px-3 py-2 my-[2px] rounded-r-xl rounded-l-2xl bg-blue-500 break-all relative",
                     `messagethemes${idGroup} ${Liked?.length > 0 && 'mb-5'}`
                   )}
                   style={{
@@ -91,10 +90,10 @@ const MessageForMe = ({ message, theme, idGroup, realTimes, totalMessages }) => 
               </ShowTabName>
               { lastMessage
               ?
-                <div className="w-[25px] text-center text-gray-500">
-                <FontAwesomeIcon icon={faCheckCircle} />
+                <div className="min-w-[25px] h-full flex justify-end text-center text-gray-500">
+                   <FontAwesomeIcon icon={faCheckCircle} />
                 </div>
-                : <div className="w-[25px]"></div>
+                : <div className="min-w-[25px]"></div>
               }
             </div>
             {
@@ -127,7 +126,7 @@ const MessageForMe = ({ message, theme, idGroup, realTimes, totalMessages }) => 
             : <div className="w-[25px]"></div>
           }
           <div className="max-w-[150px]">
-            <ImageMessage src={message.image} id={message._id}/>
+            <img className="rounded-lg" src={message.image} alt="image_masage"/>
           </div>
         </div>
       )}

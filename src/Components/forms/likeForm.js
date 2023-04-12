@@ -58,7 +58,7 @@ const ReactsForm  = ({ id, user, dataReact, type, message}) => {
      <div className="flex cart-bg bg-gray-200 rounded-3xl py-2 px-2 animate-box">
          {
           Icons.map((icon, index) => (
-              <div key={index} className={` ${message ? 'w-[20px] h-[20px]' : 'w-[40px] h-[40px]'} mx-1 `}>
+              <div key={index} className={` ${message ? 'w-[30px] h-[30px]' : 'w-[40px] h-[40px]'} mx-1 `}>
                 <ShowTabName tabName={icon.reactName} position="top">
                    <img onClick={ e => handleLikePost(icon)} className="w-full h-full cursor-pointer animate-icon" src={icon.reactUrl} alt={icon.reactName} />
                 </ShowTabName>

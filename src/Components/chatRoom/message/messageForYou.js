@@ -60,21 +60,21 @@ const MessageForYou = ({ message, theme, idGroup, realTimes, totalMessages, firt
             </div>
           }
           <div
-              className={`${(lastMessage || oneMessage) && 'mb-5' } flex items-center max-w-[80%]`}>
+              className={`flex items-center w-full `}>
 
-            <div className="flex items-center">
+            <div className="flex items-center max-w-[80%]">
                 { (lastMessage || oneMessage )
                 ?
-                  <div className="w-[30px] flex-center text-gray-500">
-                  <img className="w-[20px] h-[20px] rounded-full" src={message.sender.avatar} alt={message?.sender?.username} />
+                  <div className="min-w-[30px] flex-center text-gray-500">
+                  <img className="min-w-[20px] h-[20px] rounded-full" src={message.sender.avatar} alt={message?.sender?.username} />
                   </div>
-                  : <div className="w-[30px]"></div>
+                  : <div className="min-w-[30px]"></div>
                 }
               <ShowTabName tabName={times} position="top" theme="light">
                 <div
                   className={cx(
                     "bg-gray-700 w-full text-white px-3 py-2 my-[2px] rounded-r-xl rounded-l-2xl cart-bg break-all relative",
-                    `messagethemes${idGroup} ${Liked?.length > 0 && 'mb-5'}`
+                    `${Liked?.length > 0 && 'mb-5'}`
                   )}
                 >
                   {message.content}
@@ -97,7 +97,7 @@ const MessageForYou = ({ message, theme, idGroup, realTimes, totalMessages, firt
               showOptions &&
                 <div 
                  onClick={ e => setShowLike(true)}
-                className="mr-2">
+                className="ml-2">
                   <div className={`${Liked?.length > 0 && 'translate-y-[-8px]'} w-[30px] h-[30px] flex-center cursor-pointer cart-hover hover:bg-gray-300 rounded-full`}>
                     <i className="fiter-icon-dark" style={{'backgroundImage':'url(https://static.xx.fbcdn.net/rsrc.php/v3/yO/r/I6wNWs7nQUG.png)', 'backgroundPosition': '7px -515px', 'backgroundSize': 'auto', 'width': '30px', 'height': '16px', 'backgroundRepeat': 'no-repeat', 'display': 'inline-block'}}></i>
                 </div>
@@ -115,7 +115,7 @@ const MessageForYou = ({ message, theme, idGroup, realTimes, totalMessages, firt
         </div>
       )}
       {message.image !== "" && (
-        <div className="w-full flex flex-row-reverse my-[4px] px-1">
+        <div className="w-full flex my-[4px] px-1">
           { lastImage ?
             <div className="w-[25px] text-center text-gray-500 flex flex-col-reverse my-2">
                <FontAwesomeIcon icon={faCheckCircle} />

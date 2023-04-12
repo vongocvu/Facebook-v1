@@ -6,6 +6,7 @@ import {
   faImage,
   faMinus,
   faNoteSticky,
+  faPaperPlane,
   faThumbsUp,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -366,10 +367,8 @@ const ChatGroup = ({ data, chatWindow, roomChating }) => {
             placeholder="Aa"
           />
           <div>
-            <FontAwesomeIcon
-              icon={faThumbsUp}
-              className={cx("ml-2 cursor-pointer focusChatBox text-xl")}
-            />
+          { inputChat === "" && <FontAwesomeIcon icon={faThumbsUp} className={cx('ml-2 cursor-pointer focusChatBox text-xl')}/> }
+           { inputChat !== "" && <FontAwesomeIcon icon={faPaperPlane} className={`${(inputChat.trim() !== "" || showImage !== "")? "text-blue-500 hover:opacity-80 cursor-pointer " : "cursor-not-allowed "} px-2`}/> }
           </div>
         </div>
       </div>

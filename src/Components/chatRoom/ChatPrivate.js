@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { faChevronDown, faCirclePlus, faGift, faImage, faMinus, faNoteSticky, faThumbsUp, faXmark } from "@fortawesome/free-solid-svg-icons"
+import { faChevronDown, faCirclePlus, faGift, faImage, faMinus, faNoteSticky, faPaperPlane, faThumbsUp, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState, useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import TextareaAutosize from "react-textarea-autosize";
 
 import classNames from "classnames/bind"
 import io from 'socket.io-client'
@@ -87,8 +88,8 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
   },[])
 
   useEffect(() => {
-    messageListRef?.current && messageListRef.current.scrollIntoView()
     socket.on('message', message => {
+      messageListRef?.current && messageListRef.current.scrollIntoView()
       if (message.group === data._id ) {
         
            message.sender._id !== user._id && setIsChatting(true)
@@ -129,24 +130,27 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
         .then((response) => {
           const messages = response.data.messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
           setChatList([...messages]);
+
           if ( response.data.messages.length < limit ) {
               setHasMore(false)
+            } else {
+                setLimit(limit + 10)
             }
           setLoading(false)
         })
     }
   }
 
-
-
   useEffect(() => {
-      getMessages()
-  },[limit])
-
+    getMessages()
+  },[])
 
   const handlerSendMessage = async (e) => {
     if (inputChat.length > 0 || image.length > 0 ) {
-    const getIdMess = await handlerChat.senderMessage({
+      setInputChat("")
+      setShowImage("")
+      setImage([])
+      const getIdMess = await handlerChat.senderMessage({
         sender: {
           _id: user._id,
           avatar: user.avatar,
@@ -157,9 +161,6 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
         file: image.length > 0 ? image : "",
         content: inputChat
       })
-      setInputChat("")
-      setShowImage("")
-      setImage([])
       setNewIdMessage(getIdMess)
     }
   } 
@@ -180,9 +181,8 @@ const ChatPrivate = ({ data, chatWindow, roomChating }) => {
 
   }
 
-
   const handlerViewMoreMess = () => {
-    setLimit(limit + 10)
+        getMessages()
   }
 
   const handlerWaitChatBox = () => {
@@ -265,7 +265,7 @@ return hidden &&
            }
         </div>
 
-        <div className={cx('flex-1 overflow-y-scroll text-sm pb-[20px] secondary-bg', 'custom_scroll')} > 
+        <div className={cx('flex-1 overflow-y-scroll text-sm pb-5 secondary-bg', 'custom_scroll')} > 
                    { loading && <LoadingChatBox /> }
                    { !HasMore &&  <FirstChat avatar={friend.user.avatar}/> }
                    { HasMore &&  <div onClick={handlerViewMoreMess} ref={oldMessageRef}className="text-center py-4 hover:underline hover:text-blue-300 cursor-pointer">... Click to view more ...</div> }
@@ -273,8 +273,9 @@ return hidden &&
                     <HandlerShowMessage chatList={newMessage} user={user} data={data}/>
                    <div ref={messageListRef}></div>
         </div>
-        <div className={cx('h-[60px] flex items-center px-3 py-2 text-gray-300 dark:text-gray-400 border-t border-gray-200 b-top relative z-[1] secondary-bg')}>
-            <div className={cx('flex flex-nowrap text-xl')}>
+
+        <div className={cx('absolute bottom-0 flex items-center px-3 py-2 text-gray-300 dark:text-gray-400 border-t border-gray-200 b-top relative z-[1] secondary-bg')}>
+            <div className={cx('flex flex-nowrap text-xl h-full items-end mb-6')}>
               <FontAwesomeIcon icon={faCirclePlus} className={cx('mr-3 cursor-pointer hover:translate-y-[-3px] transition relative focusChatBox')}/>
               <FontAwesomeIcon onClick={handlerOpenFile} icon={faImage} className={cx('mr-3 cursor-pointer hover:translate-y-[-3px] transition focusChatBox')}/>
               <input onChange={ e => setImage(e.target.files) } ref={fileRef} type="file" className="hidden" />
@@ -289,13 +290,20 @@ return hidden &&
                      </div>
                   </div>
                 }
-                <input value={inputChat} 
+
+            <TextareaAutosize
                 ref={inputRef}
+                value={inputChat} 
                 onChange={e =>  setInputChat(e.target.value)} 
-                onKeyDown={e => e.keyCode === 13 && handlerSendMessage()}
-                className={cx('h-full w-full mb-1 pl-4 rounded-3xl px-2 outline-0 text-black dark:text-white comment-bg bg-gray-200 border border-gray-300 b-full relative z-[1]')} type="text" placeholder="Aa"/>
-              <div>
-            <FontAwesomeIcon icon={faThumbsUp} className={cx('ml-2 cursor-pointer focusChatBox text-xl')}/>
+                onKeyDown={e =>{ e.keyCode === 13 && handlerSendMessage() && e.preventDefault()}}
+                className={cx('h-full w-full mb-1 pl-4 py-2 rounded-3xl px-2 outline-0 custom_scroll resize-none text-black dark:text-white comment-bg bg-gray-200 border border-gray-300 b-full relative z-[1]')} placeholder="Aa"
+                minRows={1}
+                maxRows={5}
+               />
+
+              <div className="h-full flex items-end mb-6">
+           { inputChat === "" && <FontAwesomeIcon icon={faThumbsUp} className={cx('ml-2 cursor-pointer focusChatBox text-xl')}/> }
+           { inputChat !== "" && <FontAwesomeIcon onClick={e => handlerSendMessage()} icon={faPaperPlane} className={`${(inputChat.trim() !== "" || showImage !== "")? "text-blue-500 hover:opacity-80 cursor-pointer " : "cursor-not-allowed "} ml-2 mb-1`}/> }
             </div>
         </div>
       </div>

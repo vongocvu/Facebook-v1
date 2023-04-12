@@ -310,8 +310,8 @@ const ContentPost = ({ data }) => {
           </div>
         </div>
         {showDetail && (
-          <div className="flex flex-col justify-between px-3">
-            <div className="flex-1">
+          <div className="flex flex-col justify-between">
+            <div className="flex-1 px-3">
               <CommentPost post={data} />
             </div>
             <div className="sticky absolute bottom-0 left-0 right-0 secondary-bg bg-white px-3">

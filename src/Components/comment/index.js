@@ -28,7 +28,23 @@ const CommentPost = ({post}) => {
           setNewComments([ comment, ...newComments ])
         }
     })
-  })
+  },[newComments])
+
+
+  useEffect(() => {
+      socket.on('UpdateComment', comment => {
+          const index = newComments?.findIndex(Oldcomment => Oldcomment.content === comment.content)
+
+          if ( index !== -1 ) {
+            setTimeout(() => {
+                newComments[index]._id = comment._id
+                newComments[index].image = comment.image
+                setNewComments([...newComments])
+            },1000)
+          }
+      })
+  },[newComments])
+
 
 useEffect(() => {
     const fecthData = async () => {
@@ -80,9 +96,9 @@ const handlegetLike = (react, id) => {
             ))
           }
           {
-            HasMore && <div className="primary-text text-sm py-4 pl-5 flex justify-between">
+            HasMore && <div className="primary-text text-sm py-4 px-5 flex justify-between mb-8">
               <span onClick={handleViewMoreComments} className="hover:underline cursor-pointer font-medium ">View more comments</span>
-              <span>{limit} of {post?.countComments}</span>
+              <span>{limit} of {post?.countComments || 10}</span>
             </div>
           }
        </>

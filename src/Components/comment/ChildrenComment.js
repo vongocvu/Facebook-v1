@@ -30,9 +30,24 @@ const ChildrenComment = ({ inputCommenting, post, parent_id }) => {
       })
     })
       
+    useEffect(() => {
+      socket.on('UpdateComment', comment => {
+          const index = newComments?.findIndex(Oldcomment => Oldcomment.content === comment.content)
+
+          if ( index !== -1 ) {
+            setTimeout(() => {
+                newComments[index]._id = comment._id
+                newComments[index].image = comment.image
+                setNewComments([...newComments])
+            },1000)
+          }
+      })
+  },[newComments])
+
+  
       useEffect(() => {
          const fecthData = async () => {
-          parent_id !== undefined && 
+          parent_id !== "" && 
             await axios.get(`${process.env.REACT_APP_API}/v1/comment/getByParent/${parent_id}/${limit}`)
             .then(response => {
               setComments(response.data)

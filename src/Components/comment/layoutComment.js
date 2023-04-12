@@ -133,8 +133,8 @@ const CommentLayout = ({ handlerCommenting, data, getLike}) => {
                         </div>
                       }
                   </div>
-                   {
-                     data?.image &&
+                   {  
+                     data?.image !== "" &&
                      <div className="w-[170px] my-2 ml-2 relative">
                         <img onClick={ e => handleViewImage(data._id) } className="cursor-pointer h-full rounded-xl b-full " src={data?.image} alt="anhcomment"/>
                         {

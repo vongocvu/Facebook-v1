@@ -9,7 +9,12 @@ const ImageMessage = ({src, id}) => {
   }
 
   return (
-    <img onClick={handleViewDetailPhoto} className="b-full rounded-xl cursor-pointer" src={src} alt="imageMsaage" />
+    <>
+       { src.startsWith('blob') ? <div className="min-w-[30px]">
+        <div className="py-2 px-3 cart-bg bg-gray-700 rounded-xl text-white">Uploading photos...</div>
+       </div> : <img onClick={handleViewDetailPhoto} className="b-full rounded-xl cursor-pointer" src={src} alt="imageMsaage" />}
+    </>
+    
   )
 }
 

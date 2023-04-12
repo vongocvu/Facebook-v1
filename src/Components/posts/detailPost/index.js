@@ -28,17 +28,17 @@ const DetailPost = () => {
   const { id } = useParams();
 
   const { roomsWait, user } = useSelector((state) => ({ ...state }));
-
-  const [Post, setPost] = useState();
-  const [GroupPost, setGroupPost] = useState([]);
-  const [prevBtn, setPrevBtn] = useState(false);
-  const [nextBtn, setNextBtn] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [ Post, setPost ] = useState();
+  const [ GroupPost, setGroupPost ] = useState([]);
+  const [ prevBtn, setPrevBtn ] = useState(false);
+  const [ nextBtn, setNextBtn ] = useState(false);
+  const [ loading, setLoading ] = useState(false);
   const [ Liked, setLiked ] = useState({})
   const [ showLike, setShowLike ] = useState(false);
   const [ totalLike, setTotalLike ] = useState()
   const [ LikeIcons, setLikeIcons ] = useState([])
   const [ totalComments, setTotalComments ] = useState()
+  const [ ParentPost, setParentPost ] = useState({})
 
   const FormLike = useRef(null)
   const likeBtnRef = useRef(null)
@@ -57,7 +57,6 @@ const DetailPost = () => {
         }
     })
   },[totalComments])
-
 
   useEffect(() => {
     const getPost = async () => {
@@ -79,6 +78,10 @@ const DetailPost = () => {
             )
           )
           setTotalComments(response.data.curent_post.countComments)
+
+            if (response.data?.groupPost?.length === 1) {
+              setParentPost({ _id: response.data?.groupPost[0]?.parent_post})
+            }
         });
     };
     getPost();
@@ -300,12 +303,12 @@ const handleGetReact = (dataReact) => {
               {loading ? (
                 <LoadingChatBox />
               ) : GroupPost?.length === 1 ? (
-                <CommentPost post={GroupPost[0]?.parent_post} />
+                <CommentPost post={ParentPost} />
               ) : (
                 <CommentPost post={Post} />
               )}
             </div>
-            <div className="fixed md:fixed lg:absolute lg:sticky left-0 right-0 bottom-0 w-full flex justify-center secondary-bg">
+            <div className="fixed md:fixed lg:absolute lg:sticky left-0 right-0 bottom-0 w-full flex justify-center primary-text secondary-bg">
               <InputComment
                 post={GroupPost.length === 1 ? GroupPost[0]?.parent_post : id}
                 level="1"
