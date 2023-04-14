@@ -53,7 +53,7 @@ const DetailPost = () => {
   useEffect(() => {
     socket.on('comment', comment => {
       if (comment.post === Post?._id || comment.post === GroupPost[0]?.parent_post) {
-        setTotalComments(totalComments + 1)
+          setTotalComments(totalComments + 1)
         }
     })
   },[totalComments])

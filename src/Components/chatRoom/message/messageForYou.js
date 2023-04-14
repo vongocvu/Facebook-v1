@@ -81,10 +81,10 @@ const MessageForYou = ({ message, theme, idGroup, realTimes, totalMessages, firt
 
                   {
                     Liked?.length > 0 && 
-                    <div className="absolute right-[2px] bottom-[-12px]">
+                    <div className="absolute right-[2px] bottom-[-12px] flex flex-row-reverse">
                       {
                         Liked?.map((react, index) => (
-                            <img key={index} width="20" height="20" src={react.reactUrl} alt={react.reactName} />
+                            <img key={index} className={`${index >= 1 && 'translate-x-[10px]'}`} width="20" height="20" src={react.reactUrl} alt={react.reactName} />
                           )
                         )
                       }

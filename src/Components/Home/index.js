@@ -12,7 +12,6 @@ import Stories from "../slides/Stories";
 import IgnoreDynamic from '../navigation/ignore_dynamic'
 import Header from '../Header'
 import navBarHome from '../data/navBarHome'
-import Store from '../data/Stories'
 import ShowPost from '../posts'
 import UserList from "../UserList";
 import GroupList from "../GroupList";
@@ -133,7 +132,7 @@ const Home = () => {
                             </div>
                         </div>
                               <hr className={cx("border b-full")}/>
-                            <Stories Store={Store}/>
+                            <Stories />
                       </div>
 
                         <div className={cx("max-md:border-transparent max-md:shadow-transparent max-md:mb-1 max-md:order-1 w-[700px] max-md:w-[100%] max-lg:w-[600px] bg-white b-full border shadow-md rounded-lg mb-5 secondary-bg")}>

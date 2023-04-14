@@ -11,6 +11,8 @@ import ChatWindow from "./Components/chatWindow";
 import SignUp from "./Components/SignUp";
 import DetaiPhotoComment from "./Components/viewDetailPhoto/DetailPhotoComment";
 import DetailPhotoMessenger from "./Components/viewDetailPhoto/DetailPhotoMessenger";
+import Stories from "./Components/Stories";
+import StoriesDetail from "./Components/Stories/StorieDetail";
 
 function App() { 
 
@@ -24,6 +26,8 @@ function App() {
               <Route path="/detail_photos_comment/:idComment" element={<DetaiPhotoComment/>}/>
               <Route path="/detail_photos_message/:idMessage" element={<DetailPhotoMessenger/>}/>
               <Route path="/message/:id" element={<ChatWindow/>}/>
+              <Route path="/stories/create" element={<Stories/>} />
+              <Route path="/storie/detail/:idStorie" element={<StoriesDetail/>} />
            </Route>
            <Route path="/profile/:idUser" element={<Profile/>}/>
            <Route path="/watch" element={<Home/>}/>
