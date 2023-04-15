@@ -26,9 +26,9 @@ function App() {
               <Route path="/detail_photos_comment/:idComment" element={<DetaiPhotoComment/>}/>
               <Route path="/detail_photos_message/:idMessage" element={<DetailPhotoMessenger/>}/>
               <Route path="/message/:id" element={<ChatWindow/>}/>
-              <Route path="/stories/create" element={<Stories/>} />
               <Route path="/storie/detail/:idStorie" element={<StoriesDetail/>} />
            </Route>
+              <Route path="/stories/create" element={<Stories/>} />
            <Route path="/profile/:idUser" element={<Profile/>}/>
            <Route path="/watch" element={<Home/>}/>
         </Route>

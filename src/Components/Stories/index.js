@@ -162,12 +162,12 @@ import axios from "axios";
               {
                 showImage &&
                 <>
-                  <div ref={btnEditImageRef} onClick={handleAddTextForImage} className="flex p-3 items-center cart-hover my-2 rounded-lg cursor-pointer">
-                    <div className="w-[40px] h-[40px] flex-center cart-bg text-white rounded-full">Aa</div>
-                    <h3 className="text-md font-medium text-white ml-2">Add text</h3>
+                  <div ref={btnEditImageRef} onClick={handleAddTextForImage} className="flex border-[1px] border-gray-300 p-3 items-center cart-hover my-2 rounded-lg cursor-pointer">
+                    <div className="w-[40px] h-[40px] flex-center cart-bg dark:text-white rounded-full">Aa</div>
+                    <h3 className="text-md font-medium dark:text-white ml-2 ">Add text</h3>
                   </div>
                   <div ref={optionRef} className="optionsRef w-full secondary-bg rounded-lg">
-                        <div onClick={handelShowChooseFont} className="flex b-full px-4 py-2 cursor-pointer rounded-lg relative">
+                        <div onClick={handelShowChooseFont} className="flex b-full px-4 py-2 border-[1px] border-gray-300 cursor-pointer rounded-lg relative">
                               <span className="pr-4 primary-text font-medium">Aa</span>
                               <div className="flex-1 flex justify-between primary-text bg-transparent border-0 outline-none h-full">
                                     <h3>{choosedFont}</h3>
@@ -175,16 +175,16 @@ import axios from "axios";
                               </div>
                               {
                               chooseFont && 
-                              <div className="absolute py-2 px-3 primary-text  w-[101%] right-[-2px] left-[-1px] top-[110%] bg-red-800 rounded-lg b-full secondary-bg z-10">
-                                  <div codefont="'Tilt Prism', cursive" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg">Headline</div>
-                                  <div codefont="Facebook Script App Light" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg">Casual</div>
-                                  <div codefont="'Roboto Condensed', sans-serif" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg">Fancy</div>
-                                  <div codefont="'Oswald', sans-serif" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg">Simple</div>
-                                  <div codefont="'Quicksand', sans-serif" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg">Clean</div>
+                              <div className="absolute py-2 px-3 primary-text  w-[101%] right-[-2px] left-[-1px] top-[110%] bg-white border-[1px] border-gray-300 rounded-lg b-full secondary-bg z-10">
+                                  <div codefont="'Tilt Prism', cursive" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg  hover:bg-gray-100">Headline</div>
+                                  <div codefont="Facebook Script App Light" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg  hover:bg-gray-100">Casual</div>
+                                  <div codefont="'Roboto Condensed', sans-serif" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg  hover:bg-gray-100">Fancy</div>
+                                  <div codefont="'Oswald', sans-serif" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg  hover:bg-gray-100">Simple</div>
+                                  <div codefont="'Quicksand', sans-serif" onClick={handleChoosedFont} className="py-1 px-2 cart-hover rounded-lg  hover:bg-gray-100">Clean</div>
                               </div>
                               }
                           </div>
-                          <div className="w-full mt-3 b-full flex flex-wrap pl-4 pt-4 pb-1 rounded-lg">
+                          <div className="w-full mt-3 b-full flex flex-wrap pl-4 pt-4 pb-1 rounded-lg border-[1px] border-gray-300">
                               {
                               tableColor.map(( color, index ) => (
                                 <div onClick={ e => handlerChoosedColor(color.codeColor)} className="w-[22px] h-[22px] mr-2 mb-3 rounded-full b-full cursor-pointer hover:opacity-80" key={index} style={{'backgroundColor': `${color.codeColor}`}}>
@@ -200,13 +200,13 @@ import axios from "axios";
               {
                  showImage &&
                   <div className="flex justify-center py-5">
-                      <button onClick={handleCancelStory} className="px-12 mr-1 py-1 cart-bg text-white rounded-lg hover:opacity-80">Discard</button>
+                      <button onClick={handleCancelStory} className="px-12 mr-1 py-1 cart-bg dark:text-white border-[1px] border-gray-300 rounded-lg hover:opacity-80">Discard</button>
                       <button onClick={handleSubmitStory} className="px-12 ml-1 py-1 bg-blue-500 text-white rounded-lg hover:opacity-80">Share Story</button>
                   </div>
               }
             </div>
 
-            <div className="col-span-8 h-full primary-bg flex-center">
+            <div className="col-span-8 h-full primary-bg flex-center bg-gray-100">
               {
                 !showImage &&
                   <div className="flex">
@@ -232,11 +232,11 @@ import axios from "axios";
 
                 {
                   showImage && 
-                    <div className="w-[1000px] h-[800px] secondary-bg rounded-lg b-full p-5 flex flex-col ">
+                    <div className="w-[1000px] h-[800px] secondary-bg bg-white shadow-xl border-[1px] border-gray-300 rounded-lg b-full p-5 flex flex-col ">
                        <h3 className="primary-text mb-5">Preview</h3>
-                       <div className="flex-1 w-full primary-bg rounded-lg b-full flex-center">
+                       <div className="flex-1 w-full primary-bg bg-black rounded-lg b-full flex-center">
                            <div className={`w-[400px] h-[650px] relative ${addTextForImage && 'border-2 rounded-lg '}`}>
-                                <img className="w-full h-full rounded-lg b-full object-contain " src={urlImage}  alt="iamge preview"/>
+                                <img className="w-full h-full rounded-lg b-full border-[1px] border-white object-cover " src={urlImage}  alt="iamge preview"/>
                                    <div ref={imageRef} 
                                         className={`absolute inset-0 w-full h-full bg-black bg-opacity-10`}> 
                                         {

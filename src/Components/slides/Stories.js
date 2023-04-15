@@ -44,6 +44,8 @@ const Stories = () => {
   })
    
   const settings = {
+    centerMode: false,
+    centerPadding: 0,
     dots: false,
     infinite: false,
     speed: 500,
@@ -71,9 +73,9 @@ const Stories = () => {
 
   return (
         <Slider {...settings}>
-        <Link to="/stories/create" className={cx("flex card cursor-pointer relative overflow-hidden rounded-xl h-full px-1 hover:opacity-90 ")}>
-              <div className={cx("overflow-hidden rounded-xl")}>
-                <img className={cx("card-img", 'h-full object-fill')} src="https://static-images.vnncdn.net/files/publish/2022/9/3/bien-vo-cuc-thai-binh-346.jpeg" alt="1212" />
+        <Link to="/stories/create" className={cx("flex min-w-[120px] min-h-[190px] cursor-pointer relative overflow-hidden rounded-xl h-full px-1 hover:opacity-90 ")}>
+              <div className={cx("min-w-[120px] h-[190px] overflow-hidden rounded-xl")}>
+                <img className={cx("card-img", 'h-full object-cover')} src={user?.avatar} alt="1212" />
                 <div className="h-full">
                   <div className={cx("w-full absolute text-nowrap bottom-[0px] py-[20px] right-2/4 translate-x-2/4 text-center text-black text-md font-medium bg-white border")}>
                     Create story
@@ -85,9 +87,9 @@ const Stories = () => {
               </div>
             </Link>
           {Store?.map((story, index) => (
-            <Link to={`/storie/detail/${story._id}`} key={index} className={cx("card cursor-pointer relative rounded-xl hover:opacity-90 px-1 h-full")}>
-              <div ref={imageRef} className="w-[100px] h-[160px] relative b-full rounded-lg overflow-hidden">
-                   <img className="w-full h-full object-contain" src={story?.image} alt="storie" />
+            <Link to={`/storie/detail/${story._id}`} key={index} className={cx("min-w-[120px] min-h-[190px] relative cursor-pointer relative rounded-xl hover:opacity-90 px-1 h-full")}>
+              <div ref={imageRef} className="min-w-[120px] h-[190px] b-full rounded-lg overflow-hidden ">
+                   <img className="object-cover w-full h-full" src={story?.image} alt="storie" />
                    {
                     story?.text?.map((text, i) => (
                       <TextareaAutosize
@@ -100,10 +102,16 @@ const Stories = () => {
                         style={{ 'userSelect': 'none', 'fontFamily': `${text.fontFamily}`,
                         'color':`${text.color}`, 'position': 'absolute', 'top': `${text.top}%`, 'lineHeight': `10px`,
                          'left': `${text.left}%`, 'fontSize': `${text.fontSize * (parseInt(imageRef?.current?.getBoundingClientRect()?.height) / 100)}%`}} 
-                        className={`select-none w-full text-center bg-transparent outline-none  resize-none`}
+                        className={`select-none w-full cursor-pointer text-center bg-transparent outline-none  resize-none`}
                         />
                     ))
                    }
+                   <div className="absolute w-[40px] h-[40px] top-[10px] left-[10px]">
+                        <img className="rounded-full" src={story?.author?.avatar} alt={story?.author?.username} />
+                   </div>
+                   <div className="absolute font-medium text-white bottom-[10px] left-[10px]">
+                        <span>{story?.author?.username}</span>
+                   </div>
                </div>
             </Link>
           ))}

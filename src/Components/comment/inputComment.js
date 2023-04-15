@@ -131,7 +131,7 @@ const InputComment = ({post, parent_id, level, isFocus}) => {
             </div>
           </div>
           <div>
-            <FontAwesomeIcon className={`${comment.trim() !== "" ? "text-blue-500 hover:opacity-80 cursor-pointer " : "cursor-not-allowed "} `} icon={faPaperPlane} />
+            <FontAwesomeIcon onClick={ e => {handlerSubmitComment()} } className={`${comment.trim() !== "" ? "text-blue-500 hover:opacity-80 cursor-pointer " : "cursor-not-allowed "} `} icon={faPaperPlane} />
           </div>
         </div>
       </div>
