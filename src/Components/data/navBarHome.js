@@ -7,7 +7,7 @@ const icon = (position) => {
         className=""
         style={{
           "backgroundImage":
-            "url(https://static.xx.fbcdn.net/rsrc.php/v3/yU/r/BHDNlEdwMgn.png)",
+            "url(https://static.xx.fbcdn.net/rsrc.php/v3/yz/r/4GR4KRf3hN2.png)",
           "backgroundPosition": `0 ${position}px`,
           "backgroundSize": "auto",
           width: "36px",
