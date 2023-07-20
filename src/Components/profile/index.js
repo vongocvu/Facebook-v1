@@ -226,7 +226,7 @@ const Profile = () => {
                         </div>
                         <div className="flex justify-between flex-1 max-lg:flex-col max-lg:items-center">
                           <div className="flex flex-col justify-end text-gray-800 dark:text-gray-300 ml-4">
-                            <h1 className="text-2xl font-bold max-lg:text-center">Võ Ngọc Vũ</h1>
+                            <h1 className="text-2xl font-bold max-lg:text-center">{friends?.username}</h1>
                             <h3 className="my-1 font-medium max-lg:text-center max-lg:my-3">{friends.friends?.length} friends</h3>
                             <div className="flex">
                               {
